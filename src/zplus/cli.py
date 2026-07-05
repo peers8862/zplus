@@ -1,0 +1,51 @@
+"""zplus command-line entry point — a subcommand framework (SP2 `add-type` slots in here)."""
+import argparse
+import os
+import sys
+
+from .commands import (apply as apply_cmd, entry as entry_cmd, nav as nav_cmd,
+                       new as new_cmd, site as site_cmd)
+
+
+def build_parser():
+    p = argparse.ArgumentParser(prog="zplus",
+                                description="Zensical customization toolkit")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("new", help="create a new Zensical project and apply zplus") \
+        .add_argument("name")
+    sub.add_parser("apply", help="apply/update zplus in the current project")
+    sub.add_parser("new-entry", help="scaffold a new entry from a template") \
+        .add_argument("--fill", action="store_true",
+                      help="prompt each section at the terminal")
+    sub.add_parser("gen-nav", help="regenerate the managed nav region")
+    sub.add_parser("serve", help="regenerate nav, then serve locally")
+    sub.add_parser("build", help="build + encrypt into ./site")
+    sub.add_parser("deploy", help="build + encrypt + push to the deploy branch")
+    return p
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    args = build_parser().parse_args(argv)
+    cwd = os.getcwd()
+    if args.cmd == "new":
+        return new_cmd.main([args.name])
+    if args.cmd == "apply":
+        return apply_cmd.main([])
+    if args.cmd == "new-entry":
+        return entry_cmd.main(["--fill"] if args.fill else [])
+    if args.cmd == "gen-nav":
+        return nav_cmd.main([])
+    if args.cmd == "serve":
+        return site_cmd.serve(cwd)
+    if args.cmd == "build":
+        site_cmd.build(cwd)
+        return 0
+    if args.cmd == "deploy":
+        site_cmd.deploy(cwd)
+        return 0
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

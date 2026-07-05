@@ -1,0 +1,176 @@
+# zplus manifest — the source of truth for this site's doc types.
+# `zplus new-entry` and `zplus gen-nav` read this file; `zplus add-type` (later)
+# will append to it. Edit a template's prose in templates/<file>; change a type's
+# structure (sections, folder, label, order) here.
+
+[project]
+managed_nav   = "ZPLUS_TYPES"        # name of the managed nav region in zensical.toml
+deploy_branch = "gh-pages"
+# deploy_remote = "https://github.com/<you>/<repo>.git"   # set before `zplus deploy`
+
+[[type]]
+name = "challenge"
+label = "Challenges"
+folder = "business-challenges"
+template = "challenge.md"
+  [[type.section]]
+  heading = "The issue"
+  shape = "prose"
+  prompt = "The focused problem — what's slow, manual, painful, or missing."
+  [[type.section]]
+  heading = "How we see it"
+  shape = "prose"
+  prompt = "The owners' read on it: why it matters, where it bites, what's really going on."
+  [[type.section]]
+  heading = "What we've tried"
+  shape = "prose"
+  prompt = "History of attempts — what's been tried before and how it went."
+  [[type.section]]
+  heading = "Shape of a solution"
+  shape = "prose"
+  prompt = "Early thinking on what a fix could look like."
+  [[type.section]]
+  heading = "Technical preferences"
+  shape = "prose"
+  prompt = "Tools, platforms, or constraints to respect (or avoid)."
+  [[type.section]]
+  heading = "Company implications"
+  shape = "prose"
+  prompt = "How solving — or not solving — this affects the wider business."
+  [[type.section]]
+  heading = "Strategic commentary"
+  shape = "prose"
+  prompt = "Bigger-picture thoughts: priorities, trade-offs, timing."
+
+[[type]]
+name = "meeting"
+label = "Meetings"
+folder = "work/meetings"
+template = "meeting.md"
+  [[type.section]]
+  heading = "Agenda"
+  shape = "list"
+  [[type.section]]
+  heading = "Decisions"
+  shape = "list"
+  [[type.section]]
+  heading = "Action items"
+  shape = "task"
+  [[type.section]]
+  heading = "Actions taken"
+  shape = "list"
+
+[[type]]
+name = "call"
+label = "Calls"
+folder = "work/calls"
+template = "call.md"
+  [[type.section]]
+  heading = "Topics"
+  shape = "list"
+  [[type.section]]
+  heading = "Observations"
+  shape = "list"
+  [[type.section]]
+  heading = "Insights"
+  shape = "list"
+  [[type.section]]
+  heading = "Suggested actions"
+  shape = "list"
+
+[[type]]
+name = "idea"
+label = "Ideas"
+folder = "ideas"
+template = "idea.md"
+  [[type.section]]
+  heading = "Topic"
+  shape = "prose"
+  prompt = "The core subject in a line."
+  [[type.section]]
+  heading = "Summary"
+  shape = "prose"
+  prompt = "The idea in brief — what it is and why it's interesting."
+  [[type.section]]
+  heading = "Connections"
+  shape = "prose"
+  prompt = "What it links to: other ideas, work, people, prior art."
+  [[type.section]]
+  heading = "Contexts"
+  shape = "prose"
+  prompt = "Where and when this applies; conditions that make it relevant."
+
+[[type]]
+name = "reference"
+label = "Refs"
+folder = "refs"
+template = "reference.md"
+  [[type.section]]
+  heading = "Description"
+  shape = "prose"
+  prompt = "What it is and why it's worth keeping."
+  [[type.section]]
+  heading = "Link"
+  shape = "prose"
+  prompt = "The URL."
+
+[[type]]
+name = "timeline"
+label = "Timeline"
+folder = "timeline"
+template = "timeline.md"
+# no ## sections — a single prose body under the H1
+
+[[type]]
+name = "automation"
+label = "Automations"
+folder = "automations"
+template = "automation.md"
+  [[type.section]]
+  heading = "Overview"
+  shape = "prose"
+  prompt = "What this automates, in a line or two."
+  [[type.section]]
+  heading = "Trigger"
+  shape = "prose"
+  prompt = "What kicks it off — an event, a schedule, or a manual start."
+  [[type.section]]
+  heading = "Steps"
+  shape = "list"
+  [[type.section]]
+  heading = "Systems & tools"
+  shape = "list"
+  [[type.section]]
+  heading = "Intended impact"
+  shape = "prose"
+  prompt = "The improvement this delivers — time saved, errors cut, capacity gained."
+  [[type.section]]
+  heading = "Business considerations"
+  shape = "prose"
+  prompt = "Costs, risks, dependencies, approvals, or anything else to weigh."
+
+[[type]]
+name = "operation"
+label = "Operations"
+folder = "operations"
+template = "operation.md"
+  [[type.section]]
+  heading = "Business area"
+  shape = "prose"
+  prompt = "Which aspect of the business this concerns."
+  [[type.section]]
+  heading = "Current approach"
+  shape = "prose"
+  prompt = "How it is performed today, and where it falls short."
+  [[type.section]]
+  heading = "AI & agent enhancement"
+  shape = "prose"
+  prompt = "How AI and agents change the way this is done."
+  [[type.section]]
+  heading = "Depth & reach gained"
+  shape = "prose"
+  prompt = "The deeper or broader capability this unlocks."
+  [[type.section]]
+  heading = "Considerations"
+  shape = "prose"
+  prompt = "Requirements, risks, and trade-offs to keep in view."

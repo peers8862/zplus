@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zplus"
+version = "0.1.0"
+description = "A pip-installable toolkit of Zensical customizations for new or existing sites."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Morgen Peers" }]
+keywords = ["zensical", "mkdocs", "static-site", "toolkit"]
+dependencies = []
+# Runtime tools invoked as subprocesses (not Python deps): zensical, node/npx
+# (for staticrypt), git.
+
+[project.scripts]
+zplus = "zplus.cli:main"
+new-entry = "zplus.commands.entry:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/zplus"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/zplus", "README.md", "docs", "QUESTIONS.md"]
