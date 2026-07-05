@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 
+from . import manifest as manifest_mod
 from .commands import (apply as apply_cmd, entry as entry_cmd, nav as nav_cmd,
                        new as new_cmd, site as site_cmd)
 
@@ -11,9 +12,17 @@ def build_parser():
     p = argparse.ArgumentParser(prog="zplus",
                                 description="Zensical customization toolkit")
     sub = p.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("new", help="create a new Zensical project and apply zplus") \
-        .add_argument("name")
-    sub.add_parser("apply", help="apply/update zplus in the current project")
+
+    p_new = sub.add_parser("new", help="create a new Zensical project and apply zplus")
+    p_new.add_argument("name")
+    p_new.add_argument("--profile", default="projecthub",
+                       help="site kind to seed (default: projecthub)")
+
+    p_apply = sub.add_parser("apply", help="apply/update zplus in the current project")
+    p_apply.add_argument("--profile", default=None,
+                         help="profile for a fresh project (default: projecthub)")
+
+    sub.add_parser("profiles", help="list available profiles (site kinds)")
     sub.add_parser("new-entry", help="scaffold a new entry from a template") \
         .add_argument("--fill", action="store_true",
                       help="prompt each section at the terminal")
@@ -28,10 +37,17 @@ def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     args = build_parser().parse_args(argv)
     cwd = os.getcwd()
+
     if args.cmd == "new":
-        return new_cmd.main([args.name])
+        a = [args.name] + (["--profile", args.profile] if args.profile else [])
+        return new_cmd.main(a)
     if args.cmd == "apply":
-        return apply_cmd.main([])
+        a = ["--profile", args.profile] if args.profile else []
+        return apply_cmd.main(a)
+    if args.cmd == "profiles":
+        for name in manifest_mod.available_profiles():
+            print(name)
+        return 0
     if args.cmd == "new-entry":
         return entry_cmd.main(["--fill"] if args.fill else [])
     if args.cmd == "gen-nav":

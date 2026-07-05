@@ -1,0 +1,13 @@
+[[type]]
+name = "reference"
+label = "Refs"
+folder = "refs"
+template = "reference.md"
+  [[type.section]]
+  heading = "Description"
+  shape = "prose"
+  prompt = "What it is and why it's worth keeping."
+  [[type.section]]
+  heading = "Link"
+  shape = "prose"
+  prompt = "The URL."

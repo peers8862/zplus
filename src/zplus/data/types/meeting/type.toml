@@ -1,0 +1,17 @@
+[[type]]
+name = "meeting"
+label = "Meetings"
+folder = "work/meetings"
+template = "meeting.md"
+  [[type.section]]
+  heading = "Agenda"
+  shape = "list"
+  [[type.section]]
+  heading = "Decisions"
+  shape = "list"
+  [[type.section]]
+  heading = "Action items"
+  shape = "task"
+  [[type.section]]
+  heading = "Actions taken"
+  shape = "list"

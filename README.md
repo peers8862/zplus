@@ -16,7 +16,8 @@ Runtime tools it calls: `zensical`, `node`/`npx` (for staticrypt encryption), `g
 ## Use
 
 ```bash
-zplus new my-site        # zensical new + apply the zplus overlay
+zplus profiles                     # list available site kinds
+zplus new my-site --profile projecthub   # zensical new + apply the profile's types
 cd my-site
 zplus apply              # (re)apply/update in an existing project — idempotent
 zplus new-entry --fill   # scaffold a dated entry; --fill prompts each section
@@ -36,6 +37,21 @@ unique `.staticrypt.json` salt; adds a managed nav region to `zensical.toml` and
 fills it from the manifest; adds a managed `.gitignore` block; removes the
 plaintext `.github/workflows/docs.yml` auto-deploy.
 
+## Profiles and types
+
+Two levels, both data:
+
+- **Types** are a reusable library (`data/types/<name>/` = a `[[type]]` def +
+  its template). A type — e.g. `meeting` — can belong to many profiles.
+- **Profiles** are site kinds (`data/profiles/<name>.toml`): an ordered list of
+  type names. `projecthub` today; `administration`, `sales`, … are drop-in
+  folders later.
+
+`zplus new --profile <kind>` **resolves** a profile into a **self-contained**
+project `zplus.toml` (full type defs, in order) plus editable templates — the
+project no longer depends on the library, so your edits and `pip install -U`
+never fight. The chosen profile is recorded in `[project].profile`.
+
 ## Manifest (`zplus.toml`)
 
 Each doc type is a `[[type]]` with `name`, `label`, `folder`, `template`, and
@@ -44,4 +60,5 @@ Each doc type is a `[[type]]` with `name`, `label`, `folder`, `template`, and
 structure here.
 
 See `QUESTIONS.md` for decisions pending review. Roadmap: `zplus add-type`
-(interactive type generator), resource generators (e.g. calendar pages).
+(add a type to the library), `zplus add-profile` (compose/order types into a new
+site kind), resource generators (e.g. calendar pages).

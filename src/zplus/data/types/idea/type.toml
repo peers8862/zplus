@@ -1,0 +1,21 @@
+[[type]]
+name = "idea"
+label = "Ideas"
+folder = "ideas"
+template = "idea.md"
+  [[type.section]]
+  heading = "Topic"
+  shape = "prose"
+  prompt = "The core subject in a line."
+  [[type.section]]
+  heading = "Summary"
+  shape = "prose"
+  prompt = "The idea in brief — what it is and why it's interesting."
+  [[type.section]]
+  heading = "Connections"
+  shape = "prose"
+  prompt = "What it links to: other ideas, work, people, prior art."
+  [[type.section]]
+  heading = "Contexts"
+  shape = "prose"
+  prompt = "Where and when this applies; conditions that make it relevant."

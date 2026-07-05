@@ -1,0 +1,17 @@
+[[type]]
+name = "call"
+label = "Calls"
+folder = "work/calls"
+template = "call.md"
+  [[type.section]]
+  heading = "Topics"
+  shape = "list"
+  [[type.section]]
+  heading = "Observations"
+  shape = "list"
+  [[type.section]]
+  heading = "Insights"
+  shape = "list"
+  [[type.section]]
+  heading = "Suggested actions"
+  shape = "list"

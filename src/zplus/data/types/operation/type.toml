@@ -1,0 +1,25 @@
+[[type]]
+name = "operation"
+label = "Operations"
+folder = "operations"
+template = "operation.md"
+  [[type.section]]
+  heading = "Business area"
+  shape = "prose"
+  prompt = "Which aspect of the business this concerns."
+  [[type.section]]
+  heading = "Current approach"
+  shape = "prose"
+  prompt = "How it is performed today, and where it falls short."
+  [[type.section]]
+  heading = "AI & agent enhancement"
+  shape = "prose"
+  prompt = "How AI and agents change the way this is done."
+  [[type.section]]
+  heading = "Depth & reach gained"
+  shape = "prose"
+  prompt = "The deeper or broader capability this unlocks."
+  [[type.section]]
+  heading = "Considerations"
+  shape = "prose"
+  prompt = "Requirements, risks, and trade-offs to keep in view."

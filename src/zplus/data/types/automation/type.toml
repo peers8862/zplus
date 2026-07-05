@@ -1,0 +1,27 @@
+[[type]]
+name = "automation"
+label = "Automations"
+folder = "automations"
+template = "automation.md"
+  [[type.section]]
+  heading = "Overview"
+  shape = "prose"
+  prompt = "What this automates, in a line or two."
+  [[type.section]]
+  heading = "Trigger"
+  shape = "prose"
+  prompt = "What kicks it off — an event, a schedule, or a manual start."
+  [[type.section]]
+  heading = "Steps"
+  shape = "list"
+  [[type.section]]
+  heading = "Systems & tools"
+  shape = "list"
+  [[type.section]]
+  heading = "Intended impact"
+  shape = "prose"
+  prompt = "The improvement this delivers — time saved, errors cut, capacity gained."
+  [[type.section]]
+  heading = "Business considerations"
+  shape = "prose"
+  prompt = "Costs, risks, dependencies, approvals, or anything else to weigh."

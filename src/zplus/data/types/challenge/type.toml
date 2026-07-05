@@ -1,0 +1,33 @@
+[[type]]
+name = "challenge"
+label = "Challenges"
+folder = "business-challenges"
+template = "challenge.md"
+  [[type.section]]
+  heading = "The issue"
+  shape = "prose"
+  prompt = "The focused problem — what's slow, manual, painful, or missing."
+  [[type.section]]
+  heading = "How we see it"
+  shape = "prose"
+  prompt = "The owners' read on it: why it matters, where it bites, what's really going on."
+  [[type.section]]
+  heading = "What we've tried"
+  shape = "prose"
+  prompt = "History of attempts — what's been tried before and how it went."
+  [[type.section]]
+  heading = "Shape of a solution"
+  shape = "prose"
+  prompt = "Early thinking on what a fix could look like."
+  [[type.section]]
+  heading = "Technical preferences"
+  shape = "prose"
+  prompt = "Tools, platforms, or constraints to respect (or avoid)."
+  [[type.section]]
+  heading = "Company implications"
+  shape = "prose"
+  prompt = "How solving — or not solving — this affects the wider business."
+  [[type.section]]
+  heading = "Strategic commentary"
+  shape = "prose"
+  prompt = "Bigger-picture thoughts: priorities, trade-offs, timing."

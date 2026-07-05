@@ -57,5 +57,29 @@ class TestValidation(unittest.TestCase):
             manifest.loads(text)
 
 
+class TestProfiles(unittest.TestCase):
+    def test_projecthub_available(self):
+        self.assertIn("projecthub", manifest.available_profiles())
+
+    def test_resolve_projecthub_is_selfcontained(self):
+        text = manifest.resolve_profile_text("projecthub")
+        self.assertIn("[project]", text)
+        self.assertIn('profile = "projecthub"', text)
+        m = manifest.loads(text, "projecthub")
+        self.assertEqual(len(m.types), 8)
+        self.assertEqual(m.project.profile, "projecthub")
+        self.assertEqual([t.name for t in m.types][:2], ["challenge", "meeting"])
+
+    def test_missing_profile_raises(self):
+        with self.assertRaises(Exception):
+            manifest.resolve_profile_text("does-not-exist")
+
+    def test_every_library_fragment_parses(self):
+        from zplus import paths
+        for name in paths.list_types():
+            m = manifest.loads(paths.read_type_fragment(name), name)
+            self.assertEqual(m.types[0].name, name)
+
+
 if __name__ == "__main__":
     unittest.main()

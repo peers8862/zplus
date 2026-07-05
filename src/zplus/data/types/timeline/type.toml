@@ -1,0 +1,6 @@
+[[type]]
+name = "timeline"
+label = "Timeline"
+folder = "timeline"
+template = "timeline.md"
+# no ## sections — a single prose body under the H1
