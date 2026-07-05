@@ -61,6 +61,8 @@ alias for `zplus new-entry`).
 | Command | What it does |
 |---|---|
 | `zplus profiles` | List available profiles (site kinds). |
+| `zplus add-type` | Interactively define a new doc type → your user library (`~/.config/zplus/types/`). |
+| `zplus add-profile` | Interactively compose a profile (ordered types) → `~/.config/zplus/profiles/`. |
 | `zplus new <name> [--profile <p>]` | `zensical new <name>`, then apply the profile (default `projecthub`). |
 | `zplus apply [--profile <p>]` | Idempotent overlay + **update**. On an existing project it reuses the recorded profile. Safe to re-run after `pip install -U`. |
 | `zplus new-entry [--fill]` | Scaffold a dated entry from a type's template. `--fill` prompts each section at the terminal. |
@@ -221,25 +223,41 @@ addition. See `QUESTIONS.md`.)
 
 ## 10. Extending
 
-### A one-off type for a single site (works today, by hand)
+### Add a reusable type — `zplus add-type`
 
-Add a `[[type]]` block to that project's `zplus.toml` and drop a matching template
-in `templates/`. The engine reads it immediately; `apply` won't touch your
-hand-written template.
+Interactively define a doc type: its key, nav label, docs folder, and each
+section's heading / shape / prompt (blank heading to finish). It's saved to your
+**user library** at `~/.config/zplus/types/<name>/` (override with `$ZPLUS_HOME`),
+and a starter `template.md` is generated from the sections. The type is then
+available to every profile and project.
 
-### A reusable type or a new profile (in the package)
+```
+$ zplus add-type
+Type key (lowercase, e.g. 'retro')  > retro
+Nav label (e.g. 'Retros')           > Retros
+Docs folder (e.g. 'work/retro')     >           ← Enter accepts the default
+Sections — enter a heading, then its shape. Blank heading to finish.
+  Section heading  > What went well
+  Shape [prose/list/task] (prose)  > list
+  Prompt (optional)  >
+  Section heading  >                             ← blank → done
+```
 
-- **New type:** add `data/types/<name>/type.toml` (a `[[type]]` fragment) +
-  `data/types/<name>/template.md`.
-- **New profile:** add `data/profiles/<name>.toml` with `label` and an ordered
-  `types = [...]` list referencing library types.
+### Add a site kind — `zplus add-profile`
 
-No engine changes are needed — adding a site kind is a drop-in folder.
+Interactively compose a profile: name it, then list the types (from the combined
+built-in + user library) **in the order** you want. Saved to
+`~/.config/zplus/profiles/<name>.toml`. Build sites with it via
+`zplus new my-site --profile <name>`.
 
-> _(coming in SP2)_ `zplus add-type` and `zplus add-profile` will make the two
-> package-authoring actions above interactive — name a type, define its
-> sections/prompts; name a profile, pick and order its types — instead of writing
-> the files by hand.
+User-library types and profiles **overlay** the built-ins (a user entry with the
+same name wins), so you extend zplus without editing the installed package.
+
+### A one-off type for a single site (no library entry)
+
+For a type you only want in one project, add a `[[type]]` block to that project's
+`zplus.toml` and drop a matching template in `templates/`. The engine reads it
+immediately; `apply` won't touch your hand-written template.
 
 ---
 
@@ -277,5 +295,5 @@ docs/             # your content
 ## 12. Pointers
 
 - **`QUESTIONS.md`** — decisions made during the build that are open to revisit.
-- **Roadmap:** SP2 = `add-type` / `add-profile` generators; SP3 = resource
-  generators (e.g. calendar feeds → an auto-built "Cal" page).
+- **Roadmap:** SP2 (`add-type` / `add-profile` generators) — **done** (see §10).
+  SP3 = resource generators (e.g. calendar feeds → an auto-built "Cal" page).

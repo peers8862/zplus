@@ -4,7 +4,8 @@ import os
 import sys
 
 from . import manifest as manifest_mod
-from .commands import (apply as apply_cmd, entry as entry_cmd, nav as nav_cmd,
+from .commands import (add_profile as add_profile_cmd, add_type as add_type_cmd,
+                       apply as apply_cmd, entry as entry_cmd, nav as nav_cmd,
                        new as new_cmd, site as site_cmd)
 
 
@@ -23,6 +24,8 @@ def build_parser():
                          help="profile for a fresh project (default: projecthub)")
 
     sub.add_parser("profiles", help="list available profiles (site kinds)")
+    sub.add_parser("add-type", help="interactively define a new doc type (user library)")
+    sub.add_parser("add-profile", help="interactively compose a profile from types (user library)")
     sub.add_parser("new-entry", help="scaffold a new entry from a template") \
         .add_argument("--fill", action="store_true",
                       help="prompt each section at the terminal")
@@ -48,6 +51,10 @@ def main(argv=None):
         for name in manifest_mod.available_profiles():
             print(name)
         return 0
+    if args.cmd == "add-type":
+        return add_type_cmd.main([])
+    if args.cmd == "add-profile":
+        return add_profile_cmd.main([])
     if args.cmd == "new-entry":
         return entry_cmd.main(["--fill"] if args.fill else [])
     if args.cmd == "gen-nav":

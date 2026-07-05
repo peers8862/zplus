@@ -59,6 +59,7 @@ Each doc type is a `[[type]]` with `name`, `label`, `folder`, `template`, and
 `prompt`). Edit a template's prose in `templates/<file>`; change a type's
 structure here.
 
-See `QUESTIONS.md` for decisions pending review. Roadmap: `zplus add-type`
-(add a type to the library), `zplus add-profile` (compose/order types into a new
-site kind), resource generators (e.g. calendar pages).
+`zplus add-type` and `zplus add-profile` create new types/profiles interactively,
+saved to your user library (`~/.config/zplus/`, overlaying the built-ins). See
+`docs/GUIDE.md` §10 and `QUESTIONS.md`. Roadmap: resource generators (e.g. calendar
+pages).
