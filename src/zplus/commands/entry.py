@@ -12,7 +12,8 @@ from datetime import date
 
 from .. import core, manifest as manifest_mod
 
-_HINT = {"task": "one per line", "list": "one bullet per line", "prose": "type freely"}
+_HINT = {"task": "one per line", "list": "one bullet per line",
+         "prose": "type freely", "diagram": "mermaid syntax, one line per row"}
 
 
 def ask(prompt, default=None):

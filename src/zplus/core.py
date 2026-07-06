@@ -98,6 +98,8 @@ def render_body(lines, shape):
         return "\n".join(f"- [ ] {l}" for l in lines)
     if shape == "list":
         return "\n".join(f"- {l}" for l in lines)
+    if shape == "diagram":
+        return "```mermaid\n" + "\n".join(lines) + "\n```"
     return "\n".join(lines)
 
 

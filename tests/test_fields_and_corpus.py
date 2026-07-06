@@ -151,5 +151,13 @@ landing = "Automations."
             self.assertEqual(check_cmd.run(d), 1)
 
 
+class DiagramShape(unittest.TestCase):
+    def test_render_body_wraps_mermaid(self):
+        out = core.render_body(["graph TD", "A --> B"], "diagram")
+        self.assertTrue(out.startswith("```mermaid\n"))
+        self.assertIn("A --> B", out)
+        self.assertTrue(out.rstrip().endswith("```"))
+
+
 if __name__ == "__main__":
     unittest.main()
