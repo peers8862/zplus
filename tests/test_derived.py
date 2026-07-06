@@ -54,5 +54,23 @@ class GenDerived(unittest.TestCase):
             self.assertEqual(first, second)
 
 
+from zplus.commands import nav as nav_cmd
+
+
+class IntegrationDerived(unittest.TestCase):
+    def test_action_center_becomes_a_mission_control_subpage(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+                f.write(manifest.resolve_profile_text("administration"))
+            with open(os.path.join(d, "zensical.toml"), "w", encoding="utf-8") as f:
+                f.write('[project]\nsite_name="t"\nnav = [\n]\n')
+            _write(os.path.join(d, "docs", "mission-control", "index.md"),
+                   "# Mission Control\n\nStart.\n")
+            derived.gen_derived(d)          # creates action-center.md
+            nav_cmd.regenerate(d)           # should list it under Mission Control
+            zt = open(os.path.join(d, "zensical.toml"), encoding="utf-8").read()
+            self.assertIn("mission-control/action-center.md", zt)
+
+
 if __name__ == "__main__":
     unittest.main()
