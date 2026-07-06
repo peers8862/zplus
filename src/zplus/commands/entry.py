@@ -4,6 +4,7 @@ Scaffold mode (default) writes the stamped template and opens $EDITOR. Fill mode
 (--fill) walks each section at the terminal first, using the manifest's declared
 shape (falling back to detecting it from the template body).
 """
+import csv
 import os
 import re
 import subprocess
@@ -209,6 +210,69 @@ def create(project_dir, fill=False):
     print(f"✔ wrote {os.path.relpath(path, project_dir)}")
     open_editor(path)
     return path
+
+
+def _load_rows(path):
+    if path.endswith((".yaml", ".yml")):
+        import yaml
+        with open(path, encoding="utf-8") as f:
+            return list(yaml.safe_load(f) or [])
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def _coerce(field, raw):
+    """Shape a raw cell for a field: split on '|'; wrap lone value in a list for many."""
+    if raw is None:
+        return None
+    if isinstance(raw, list):
+        return raw
+    parts = [p.strip() for p in str(raw).split("|") if p.strip()]
+    many = field is not None and (getattr(field, "many", False)
+                                  or field.type == "multi-enum")
+    if many:
+        return parts
+    return parts[0] if len(parts) == 1 else parts
+
+
+def create_from_file(project_dir, type_name, path):
+    """Batch-create one entry per row of a CSV/YAML file. Returns created paths."""
+    m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
+    dt = m.type_by_name(type_name)
+    if dt is None:
+        raise SystemExit(f"error: no type named '{type_name}'")
+    field_by_name = {f.name: f for f in dt.fields}
+    folder = os.path.join(project_dir, "docs", dt.folder)
+    os.makedirs(folder, exist_ok=True)
+    created = []
+    for row in _load_rows(path):
+        title = (row.get("title") or "").strip()
+        if not title:
+            continue
+        slug = core.slugify(title)
+        cols = {k: v for k, v in row.items() if k not in ("title", "date")}
+        if dt.templated:
+            entry_date = (row.get("date") or date.today().isoformat()).strip()
+            fpath, suffix = core.resolve_collision(folder, entry_date, slug)
+            with open(os.path.join(project_dir, "templates", dt.template),
+                      encoding="utf-8") as f:
+                text = core.stamp(f.read(), title, entry_date, suffix)
+            for k, v in cols.items():
+                val = _coerce(field_by_name.get(k), v)
+                if val not in (None, "", []):
+                    text = core.set_front_matter_value(text, k, val)
+        else:
+            fpath = core.resolve_plain(folder, slug)
+            fm = [f"title: {title}"]
+            for k, v in cols.items():
+                val = _coerce(field_by_name.get(k), v)
+                if val not in (None, "", []):
+                    fm.append(f"{k}: {core.render_fm_value(val)}")
+            text = "---\n" + "\n".join(fm) + f"\n---\n# {title}\n"
+        with open(fpath, "w", encoding="utf-8") as f:
+            f.write(text if text.endswith("\n") else text + "\n")
+        created.append(os.path.relpath(fpath, project_dir))
+    return created
 
 
 def main(argv=None):

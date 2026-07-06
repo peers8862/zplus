@@ -28,9 +28,13 @@ def build_parser():
     sub.add_parser("profiles", help="list available profiles (site kinds)")
     sub.add_parser("add-type", help="interactively define a new doc type (user library)")
     sub.add_parser("add-profile", help="interactively compose a profile from types (user library)")
-    sub.add_parser("new-entry", help="scaffold a new templated entry") \
-        .add_argument("--fill", action="store_true",
-                      help="prompt each section at the terminal")
+    p_entry = sub.add_parser("new-entry", help="scaffold a new entry")
+    p_entry.add_argument("--fill", action="store_true",
+                         help="prompt each field and section at the terminal")
+    p_entry.add_argument("--from", dest="from_file", metavar="FILE",
+                         help="batch-create entries from a CSV/YAML file")
+    p_entry.add_argument("--type", dest="type_name", metavar="NAME",
+                         help="type name (required with --from)")
     sub.add_parser("add-page", help="add a plain subpage to a non-templated section")
     sub.add_parser("gen-nav", help="regenerate the managed nav region")
     sub.add_parser("check", help="lint the corpus (refs, required fields, enums)")
@@ -62,6 +66,12 @@ def main(argv=None):
     if args.cmd == "add-profile":
         return add_profile_cmd.main([])
     if args.cmd == "new-entry":
+        if args.from_file:
+            if not args.type_name:
+                raise SystemExit("error: --from requires --type NAME")
+            created = entry_cmd.create_from_file(cwd, args.type_name, args.from_file)
+            print(f"✔ created {len(created)} entr{'y' if len(created) == 1 else 'ies'}")
+            return 0
         return entry_cmd.main(["--fill"] if args.fill else [])
     if args.cmd == "add-page":
         return add_page_cmd.main([])
