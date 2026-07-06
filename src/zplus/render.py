@@ -83,6 +83,37 @@ def action_center_markdown(corpus, m):
     )
 
 
+def _node_id(slug):
+    return re.sub(r"[^0-9A-Za-z_]", "_", slug)
+
+
+def graph_mermaid(corpus, m):
+    """A mermaid graph of the corpus: a node per ref-connected entry, edge per ref."""
+    type_by_name = {t.name: t for t in m.types}
+    nodes, edges = {}, []
+    for e in corpus.entries:
+        t = type_by_name.get(e.type_name)
+        if not t:
+            continue
+        for f in t.fields:
+            if f.type != "ref":
+                continue
+            for slug in _as_list(e.fields.get(f.name)):
+                tgt = corpus.by_slug.get(slug)
+                if tgt is None:
+                    continue
+                nodes[e.slug] = e.title
+                nodes[tgt.slug] = tgt.title
+                edges.append((e.slug, f.name, tgt.slug))
+    lines = ["```mermaid", "graph LR"]
+    for slug, title in sorted(nodes.items()):
+        lines.append(f'  {_node_id(slug)}["{title}"]')
+    for src, field_name, tgt in edges:
+        lines.append(f"  {_node_id(src)} -->|{field_name}| {_node_id(tgt)}")
+    lines.append("```")
+    return "\n".join(lines)
+
+
 def corpus_to_dict(corpus):
     return {"entries": [
         {"type": e.type_name, "slug": e.slug, "title": e.title,

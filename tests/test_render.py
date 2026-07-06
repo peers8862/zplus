@@ -84,5 +84,36 @@ landing = "x"
         self.assertEqual(d["entries"][0]["backlinks"], {"automation.touches": ["a1"]})
 
 
+class GraphMermaid(unittest.TestCase):
+    def test_edges_from_resolved_refs(self):
+        m = manifest.loads('''
+[[type]]
+name = "agent"
+label = "Agents"
+folder = "agents"
+template = "a.md"
+landing = "x"
+  [[type.field]]
+  name = "runs"
+  type = "ref"
+  ref = "automation"
+  many = true
+[[type]]
+name = "automation"
+label = "Automations"
+folder = "automations"
+template = "au.md"
+landing = "x"
+''', source="t")
+        bot = Entry("agent", "bot", "Bot", "p", {"runs": ["imp"]}, {})
+        imp = Entry("automation", "imp", "Import", "p", {}, {})
+        out = render.graph_mermaid(_corpus([bot, imp]), m)
+        self.assertIn("```mermaid", out)
+        self.assertIn("graph LR", out)
+        self.assertIn('bot["Bot"]', out)
+        self.assertIn("-->|runs|", out)
+        self.assertIn("imp", out)
+
+
 if __name__ == "__main__":
     unittest.main()
