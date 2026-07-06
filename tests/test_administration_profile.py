@@ -70,5 +70,21 @@ class AdministrationProfile(unittest.TestCase):
             self.assertTrue(t.landing, f"{t.name} missing landing")
 
 
+class LandingMaterialization(unittest.TestCase):
+    def test_apply_writes_a_landing_index_per_type(self):
+        from zplus.commands import apply as apply_cmd
+        m = manifest.resolve_profile("administration")
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "docs"))
+            with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+                f.write(manifest.resolve_profile_text("administration"))
+            written = apply_cmd._materialize_landings(d)
+            self.assertEqual(len(written), len(m.types))
+            for t in m.types:
+                idx = os.path.join(d, "docs", t.folder, "index.md")
+                self.assertTrue(os.path.exists(idx), f"missing landing for {t.name}")
+                self.assertIn(t.label, open(idx, encoding="utf-8").read())
+
+
 if __name__ == "__main__":
     unittest.main()
