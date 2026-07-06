@@ -29,6 +29,7 @@ class Field:
     values: list = field(default_factory=list)
     ref: str = ""
     many: bool = False
+    done: list = field(default_factory=list)   # status values that DON'T need attention
 
 
 @dataclass
@@ -42,6 +43,7 @@ class DocType:
     sections: list = field(default_factory=list)
     fields: list = field(default_factory=list)
     order: str = ""             # "" derives from templated (date-desc | alpha)
+    facet: str = ""             # a field name to group the collection's landing by
 
 
 @dataclass
@@ -118,7 +120,8 @@ def from_dict(data, source="<dict>"):
                                 required=fdef.get("required", False),
                                 values=fdef.get("values", []),
                                 ref=fdef.get("ref", ""),
-                                many=fdef.get("many", False)))
+                                many=fdef.get("many", False),
+                                done=fdef.get("done", [])))
         order = t.get("order", "")
         if order and order not in VALID_ORDERS:
             raise ValueError(
@@ -127,7 +130,8 @@ def from_dict(data, source="<dict>"):
         types.append(DocType(name=t["name"], label=t["label"],
                              folder=t["folder"], template=t.get("template", ""),
                              templated=templated, landing=t.get("landing", ""),
-                             sections=sections, fields=fields, order=order))
+                             sections=sections, fields=fields, order=order,
+                             facet=t.get("facet", "")))
     return Manifest(project=project, types=types)
 
 

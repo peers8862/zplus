@@ -115,5 +115,44 @@ landing = "x"
         self.assertIn("imp", out)
 
 
+class Views(unittest.TestCase):
+    def _incident_type(self):
+        return manifest.loads('''
+[[type]]
+name = "incident"
+label = "Incidents"
+folder = "incidents"
+template = "i.md"
+landing = "x"
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["open", "mitigated", "resolved"]
+  done = ["resolved"]
+''', source="t")
+
+    def test_board_has_columns_and_state_diagram(self):
+        t = self._incident_type().types[0]
+        e1 = Entry("incident", "a", "A", "p", {"status": "open"}, {})
+        e2 = Entry("incident", "b", "B", "p", {"status": "resolved"}, {})
+        board = render.board_markdown(t, [e1, e2])
+        self.assertIn("### open", board)
+        self.assertIn("### resolved", board)
+        self.assertIn("stateDiagram", board)
+        self.assertIn("[A](a.md)", board)
+
+    def test_action_center_open_uses_done(self):
+        m = self._incident_type()
+        openi = Entry("incident", "a", "Open one", "p", {"owner": "s", "status": "open"}, {})
+        donei = Entry("incident", "b", "Done one", "p", {"owner": "s", "status": "resolved"}, {})
+        md = render.action_center_markdown(_corpus([openi, donei]), m)
+        self.assertIn("Open one", md)          # open status flagged
+        self.assertNotIn("Done one", md)       # resolved (in done) not flagged
+
+
 if __name__ == "__main__":
     unittest.main()

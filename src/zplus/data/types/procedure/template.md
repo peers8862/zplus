@@ -3,6 +3,7 @@ date: YYYY-MM-DD
 title: Procedure title
 owner:
 status:
+function:
 uses: []
 ---
 # Procedure title — YYYY-MM-DD

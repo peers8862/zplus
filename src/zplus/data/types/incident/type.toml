@@ -32,6 +32,7 @@ landing = "Incidents and postmortems — what broke and what we learned. Newest 
   name = "status"
   type = "status"
   values = ["open", "mitigated", "resolved", "postmortem"]
+  done = ["resolved", "postmortem"]
   [[type.field]]
   name = "involved"
   type = "ref"

@@ -32,6 +32,7 @@ landing = "Decisions — context, options, and the call. Newest first."
   name = "status"
   type = "status"
   values = ["proposed", "decided", "superseded"]
+  done = ["decided", "superseded"]
   [[type.field]]
   name = "supersedes"
   type = "ref"

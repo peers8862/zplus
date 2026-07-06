@@ -25,7 +25,9 @@ class GenDerived(unittest.TestCase):
                "---\ntitle: Billing\n---\n# Billing\n")
         _write(os.path.join(d, "docs", "automations", "invoice-import.md"),
                "---\ntitle: Invoice Import\nowner: steve\n"
-               "status: proposed\ntouches: [billing]\n---\n# Invoice Import\n")
+               "status: manual\ntouches: [billing]\n---\n# Invoice Import\n")
+        _write(os.path.join(d, "docs", "incidents", "outage.md"),
+               "---\ntitle: Outage\nowner: steve\nstatus: open\n---\n# Outage\n")
 
     def test_writes_dashboard_action_center_and_corpus_json(self):
         with tempfile.TemporaryDirectory() as d:
@@ -37,7 +39,7 @@ class GenDerived(unittest.TestCase):
             self.assertIn("[Invoice Import](invoice-import.md)", landing)  # dashboard
             ac = os.path.join(d, "docs", "mission-control", "action-center.md")
             self.assertTrue(os.path.exists(ac))
-            self.assertIn("status `proposed`", open(ac, encoding="utf-8").read())
+            self.assertIn("status `open`", open(ac, encoding="utf-8").read())
             data = json.load(open(os.path.join(d, "corpus.json"), encoding="utf-8"))
             slugs = {e["slug"] for e in data["entries"]}
             self.assertIn("invoice-import", slugs)

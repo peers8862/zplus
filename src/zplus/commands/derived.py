@@ -29,6 +29,14 @@ def gen_derived(project_dir):
             text = f.read()
         table = render.dashboard_table(t, ents, c)
         text = render.splice_md_region(text, render.DASH_BEGIN, render.DASH_END, table)
+        board = render.board_markdown(t, ents)
+        if board:
+            text = render.splice_md_region(text, render.BOARD_BEGIN, render.BOARD_END, board)
+        if t.facet:
+            facet = render.facet_markdown(t, ents)
+            if facet:
+                text = render.splice_md_region(text, render.FACET_BEGIN,
+                                               render.FACET_END, facet)
         with open(landing, "w", encoding="utf-8") as f:
             f.write(text)
         n_dash += 1

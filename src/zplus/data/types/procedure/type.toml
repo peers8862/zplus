@@ -4,6 +4,7 @@ label = "Procedures"
 folder = "procedures"
 template = "procedure.md"
 order = "alpha"
+facet = "function"
 landing = "Standard operating procedures — how we do things."
   [[type.section]]
   heading = "Purpose"
@@ -30,6 +31,11 @@ landing = "Standard operating procedures — how we do things."
   name = "status"
   type = "status"
   values = ["draft", "active", "deprecated"]
+  done = ["active", "deprecated"]
+  [[type.field]]
+  name = "function"
+  type = "enum"
+  values = ["finance", "people", "operations", "legal", "it"]
   [[type.field]]
   name = "uses"
   type = "ref"
