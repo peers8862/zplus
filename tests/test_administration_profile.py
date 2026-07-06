@@ -44,5 +44,31 @@ class SectionTypes(unittest.TestCase):
             self.assertTrue(t.landing, f"{name} needs a landing")
 
 
+EXPECTED_ORDER = [
+    "mission-control", "constellation",
+    "company", "role", "objective",
+    "how-we-run", "procedure", "policy", "system", "vendor",
+    "operating-rhythm", "review", "meeting", "decision",
+    "automation-program", "agent", "automation", "incident", "idea",
+    "knowledge-base", "reference",
+    "site-docs",
+]
+
+
+class AdministrationProfile(unittest.TestCase):
+    def test_profile_is_available(self):
+        self.assertIn("administration", manifest.available_profiles())
+
+    def test_resolves_to_expected_types_in_order(self):
+        m = manifest.resolve_profile("administration")
+        self.assertEqual([t.name for t in m.types], EXPECTED_ORDER)
+        self.assertEqual(m.project.profile, "administration")
+
+    def test_every_type_has_a_landing(self):
+        m = manifest.resolve_profile("administration")
+        for t in m.types:
+            self.assertTrue(t.landing, f"{t.name} missing landing")
+
+
 if __name__ == "__main__":
     unittest.main()

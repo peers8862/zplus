@@ -1,0 +1,11 @@
+label = "Administration"
+description = "Broad company operating system — mission control for running the whole enterprise and steering it toward an Automated Enterprise: mission control, company & strategy, the functional handbook (how we run), operating rhythm (reviews/meetings/decisions), the automation & AI program (agents/automations/incidents/ideas), a knowledge base, and registries (roles, systems, policies, vendors, objectives, sites)."
+types = [
+  "mission-control", "constellation",
+  "company", "role", "objective",
+  "how-we-run", "procedure", "policy", "system", "vendor",
+  "operating-rhythm", "review", "meeting", "decision",
+  "automation-program", "agent", "automation", "incident", "idea",
+  "knowledge-base", "reference",
+  "site-docs",
+]
