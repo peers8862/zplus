@@ -3,6 +3,7 @@ name = "reference"
 label = "Refs"
 folder = "refs"
 template = "reference.md"
+landing = "References and reading."
   [[type.section]]
   heading = "Description"
   shape = "prose"

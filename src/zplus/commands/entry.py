@@ -110,9 +110,11 @@ def _pick_type(types):
 
 def create(project_dir, fill=False):
     m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
-    if not m.types:
-        raise SystemExit("error: no doc types defined in zplus.toml")
-    doc_type = _pick_type(m.types)
+    types = [t for t in m.types if t.templated]
+    if not types:
+        raise SystemExit("error: no templated doc types in zplus.toml "
+                         "(section types use `zplus add-page`)")
+    doc_type = _pick_type(types)
     title = ask("Title  > ")
     today = date.today().isoformat()
     entry_date = ask(f"Date [{today}]  > ", default=today)

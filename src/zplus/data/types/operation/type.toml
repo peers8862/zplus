@@ -3,6 +3,7 @@ name = "operation"
 label = "Operations"
 folder = "operations"
 template = "operation.md"
+landing = "How AI and agents deepen operations — newest first."
   [[type.section]]
   heading = "Business area"
   shape = "prose"

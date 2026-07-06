@@ -34,6 +34,17 @@ def resolve_collision(folder, date, slug):
     raise SystemExit(f"error: more than ten '{base}' entries — check {folder}")
 
 
+def resolve_plain(folder, slug):
+    """First free `<slug>.md`, then `<slug>-2.md`, … (non-dated section pages)."""
+    first = os.path.join(folder, slug + ".md")
+    if not os.path.exists(first):
+        return first
+    n = 2
+    while os.path.exists(os.path.join(folder, f"{slug}-{n}.md")):
+        n += 1
+    return os.path.join(folder, f"{slug}-{n}.md")
+
+
 def stamp(template_text, title, date, suffix_word=None):
     """Substitute date/title into a template's front matter and H1.
 

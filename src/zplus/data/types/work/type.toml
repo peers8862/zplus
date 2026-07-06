@@ -1,0 +1,6 @@
+[[type]]
+name = "work"
+label = "Work"
+folder = "work"
+templated = false
+landing = "Proposed, confirmed, and completed work."

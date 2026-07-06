@@ -54,11 +54,30 @@ def _materialize_templates(project_dir):
     os.makedirs(dest, exist_ok=True)
     written = []
     for t in m.types:
+        if not t.templated:
+            continue  # section types have no template
         if t.name not in library:
             continue  # a project-only type ships its own template
         if _write_if_absent(os.path.join(dest, t.template),
                             paths.read_type_template(t.name)):
             written.append(t.template)
+    return written
+
+
+def _materialize_landings(project_dir):
+    """Write docs/<folder>/index.md from each type's `landing` text, if absent."""
+    m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
+    written = []
+    for t in m.types:
+        if not t.landing:
+            continue
+        folder = os.path.join(project_dir, "docs", t.folder)
+        os.makedirs(folder, exist_ok=True)
+        idx = os.path.join(folder, "index.md")
+        if not os.path.exists(idx):
+            with open(idx, "w", encoding="utf-8") as f:
+                f.write(f"# {t.label}\n\n{t.landing}\n")
+            written.append(t.folder)
     return written
 
 
@@ -94,6 +113,9 @@ def apply(project_dir, profile=None):
     tw = _materialize_templates(project_dir)
     if tw:
         actions.append(f"materialized {len(tw)} template(s)")
+    lw = _materialize_landings(project_dir)
+    if lw:
+        actions.append(f"created {len(lw)} section landing page(s)")
 
     if _write_if_absent(os.path.join(project_dir, ".env.example"),
                         paths.read_data("env.example")):

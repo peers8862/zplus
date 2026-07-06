@@ -7,10 +7,14 @@ class TestDefaultManifest(unittest.TestCase):
     def setUp(self):
         self.m = manifest.load_default()
 
-    def test_eight_types_in_order(self):
-        names = [t.name for t in self.m.types]
-        self.assertEqual(names, ["challenge", "meeting", "call", "idea",
-                                 "reference", "timeline", "automation", "operation"])
+    def test_projecthub_has_templated_and_section_types(self):
+        self.assertEqual(len(self.m.types), 15)
+        self.assertEqual(sum(t.templated for t in self.m.types), 8)
+        self.assertEqual(sum(not t.templated for t in self.m.types), 7)
+        work = self.m.type_by_name("work")
+        self.assertFalse(work.templated)
+        self.assertEqual(work.template, "")
+        self.assertTrue(work.landing)
 
     def test_type_registry_fields(self):
         idea = self.m.type_by_name("idea")
@@ -52,9 +56,14 @@ class TestValidation(unittest.TestCase):
             manifest.loads(text)
 
     def test_missing_required_field_rejected(self):
-        text = '[[type]]\nname="x"\nlabel="X"\nfolder="x"\n'  # no template
+        text = '[[type]]\nname="x"\nlabel="X"\nfolder="x"\n'  # templated (default), no template
         with self.assertRaises(ValueError):
             manifest.loads(text)
+
+    def test_section_type_needs_no_template(self):
+        m = manifest.loads('[[type]]\nname="s"\nlabel="S"\nfolder="s"\ntemplated=false\n')
+        self.assertFalse(m.types[0].templated)
+        self.assertEqual(m.types[0].template, "")
 
 
 class TestProfiles(unittest.TestCase):
@@ -66,9 +75,9 @@ class TestProfiles(unittest.TestCase):
         self.assertIn("[project]", text)
         self.assertIn('profile = "projecthub"', text)
         m = manifest.loads(text, "projecthub")
-        self.assertEqual(len(m.types), 8)
+        self.assertEqual(len(m.types), 15)
         self.assertEqual(m.project.profile, "projecthub")
-        self.assertEqual([t.name for t in m.types][:2], ["challenge", "meeting"])
+        self.assertEqual([t.name for t in m.types][:2], ["project-hub", "spokes"])
 
     def test_missing_profile_raises(self):
         with self.assertRaises(Exception):

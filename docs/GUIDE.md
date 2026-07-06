@@ -19,7 +19,7 @@ Three layers, from most general to most specific:
 | Layer | What it is | Where it lives |
 |---|---|---|
 | **Profile** (site kind) | an ordered list of types that defines a *kind* of site (`projecthub`, later `administration`, `sales`) | package: `data/profiles/<name>.toml` |
-| **Type** (doc type) | a reusable section/template (`challenge`, `meeting`, …); can belong to many profiles | package library: `data/types/<name>/` |
+| **Type** (nav section) | a top-nav folder — **templated** (dated entries: `challenge`, `meeting`) or a **section** (plain pages: `work`, `ai`); can belong to many profiles | package library: `data/types/<name>/` |
 | **Manifest** (`zplus.toml`) | a project's **self-contained** resolved copy — the full type defs for *this* site, in order | the project |
 
 Key idea: **types and profiles are authoring-side (in the package); a project is
@@ -65,7 +65,8 @@ alias for `zplus new-entry`).
 | `zplus add-profile` | Interactively compose a profile (ordered types) → `~/.config/zplus/profiles/`. |
 | `zplus new <name> [--profile <p>]` | `zensical new <name>`, then apply the profile (default `projecthub`). |
 | `zplus apply [--profile <p>]` | Idempotent overlay + **update**. On an existing project it reuses the recorded profile. Safe to re-run after `pip install -U`. |
-| `zplus new-entry [--fill]` | Scaffold a dated entry from a type's template. `--fill` prompts each section at the terminal. |
+| `zplus new-entry [--fill]` | Scaffold a dated entry from a **templated** type. `--fill` prompts each section at the terminal. |
+| `zplus add-page` | Add a plain subpage (name + optional text) to a **non-templated** section — fast build-out by human or AI. |
 | `zplus gen-nav` | Regenerate the managed nav region in `zensical.toml` from the manifest. (Run automatically by serve/build/deploy.) |
 | `zplus serve` | `gen-nav` → `zensical serve` (live preview at http://localhost:8000). |
 | `zplus build` | `gen-nav` → `zensical build --clean` → AES-encrypt every page (staticrypt) into `./site`. |
@@ -115,6 +116,10 @@ template = "challenge.md"         # under templates/
 - **Edit a template's prose** in `templates/<file>`.
 - **Change a type's structure** (sections, folder, label, order) here.
 - **Reorder types** by reordering the `[[type]]` blocks — that reorders the nav.
+- **Section types** set `templated = false` (no `template`/sections); their pages
+  come from `zplus add-page`. **Any** type may set a multi-line `landing`, written
+  to the folder's `index.md` on `apply`. Templated sections order newest-first;
+  section types order A→Z.
 
 ### Section shapes
 
@@ -172,6 +177,15 @@ line** finishes the section and moves on. No Ctrl/modifier keys. Same-day,
 same-title entries get a `-TWO`, `-THREE`, … suffix on the filename and a `(TWO)`
 on the heading so the nav stays distinct.
 
+### Author a section page (non-templated)
+
+```bash
+zplus add-page     # pick a section, give a name + optional first text block(s)
+```
+
+Built for rapid build-out (by you or an AI): each call adds one `docs/<folder>/<slug>.md`
+with an `# H1` and your text, and updates the nav. Edit the prose later.
+
 ### Preview
 
 ```bash
@@ -225,11 +239,12 @@ addition. See `QUESTIONS.md`.)
 
 ### Add a reusable type — `zplus add-type`
 
-Interactively define a doc type: its key, nav label, docs folder, and each
-section's heading / shape / prompt (blank heading to finish). It's saved to your
-**user library** at `~/.config/zplus/types/<name>/` (override with `$ZPLUS_HOME`),
-and a starter `template.md` is generated from the sections. The type is then
-available to every profile and project.
+Interactively define a doc type — **templated** (dated entries via `new-entry`) or
+a **section** (plain pages via `add-page`): its key, nav label, docs folder,
+optional landing text, and — for templated types — each section's heading / shape /
+prompt (blank heading to finish). It's saved to your **user library** at
+`~/.config/zplus/types/<name>/` (override with `$ZPLUS_HOME`); templated types also
+get a starter `template.md`. The type is then available to every profile and project.
 
 ```
 $ zplus add-type

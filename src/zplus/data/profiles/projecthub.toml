@@ -1,3 +1,3 @@
 label = "Project Hub"
-description = "Home base for project work: challenges, meetings, calls, ideas, references, timeline, automations, operations."
-types = ["challenge", "meeting", "call", "idea", "reference", "timeline", "automation", "operation"]
+description = "Full project-hub top nav: curated sections (Project Hub, Spokes, Phases, Work, Docs, AI, $) plus templated logs (Meetings, Calls, Timeline, Challenges, Automations, Operations, Ideas, Refs)."
+types = ["project-hub", "spokes", "phases", "work", "meeting", "call", "timeline", "challenge", "automation", "operation", "idea", "docs", "reference", "ai", "prices"]

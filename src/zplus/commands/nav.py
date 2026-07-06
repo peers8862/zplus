@@ -23,21 +23,24 @@ def date_key(path):
     return fm.group(1) if fm else name
 
 
-def ordered_paths(docs_dir, folder):
+def ordered_paths(docs_dir, folder, templated=True):
     files = [p for p in glob.glob(os.path.join(docs_dir, folder, "*.md"))
              if not os.path.basename(p).startswith("_")]
     index = [p for p in files if os.path.basename(p) == "index.md"]
-    entries = sorted((p for p in files if os.path.basename(p) != "index.md"),
-                     key=date_key, reverse=True)
+    others = [p for p in files if os.path.basename(p) != "index.md"]
+    if templated:
+        others = sorted(others, key=date_key, reverse=True)   # dated logs, newest first
+    else:
+        others = sorted(others, key=lambda p: os.path.basename(p))  # content, A→Z
     return [os.path.relpath(p, docs_dir).replace(os.sep, "/")
-            for p in index + entries]
+            for p in index + others]
 
 
 def build_region_body(m, docs_dir):
     """Return the nav lines (one per non-empty type) for the managed region."""
     lines = []
     for t in m.types:
-        paths = ordered_paths(docs_dir, t.folder)
+        paths = ordered_paths(docs_dir, t.folder, t.templated)
         if not paths:
             continue
         items = ", ".join(f'"{p}"' for p in paths)
@@ -57,7 +60,7 @@ def regenerate(project_dir):
     text = toml_nav.splice_region(text, m.project.managed_nav, body)
     with open(toml_path, "w", encoding="utf-8") as f:
         f.write(text)
-    return sum(1 for t in m.types if ordered_paths(docs_dir, t.folder))
+    return sum(1 for t in m.types if ordered_paths(docs_dir, t.folder, t.templated))
 
 
 def main(argv=None):

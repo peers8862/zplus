@@ -1,0 +1,6 @@
+[[type]]
+name = "ai"
+label = "AI"
+folder = "ai"
+templated = false
+landing = "How the site runs, and how AI and agents work with it."

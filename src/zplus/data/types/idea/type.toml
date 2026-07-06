@@ -3,6 +3,7 @@ name = "idea"
 label = "Ideas"
 folder = "ideas"
 template = "idea.md"
+landing = "Ideas, rough and polished — newest first."
   [[type.section]]
   heading = "Topic"
   shape = "prose"

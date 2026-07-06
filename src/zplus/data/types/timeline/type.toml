@@ -3,4 +3,5 @@ name = "timeline"
 label = "Timeline"
 folder = "timeline"
 template = "timeline.md"
+landing = "Chronological record of the engagement — newest first."
 # no ## sections — a single prose body under the H1

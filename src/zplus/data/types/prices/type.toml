@@ -1,0 +1,6 @@
+[[type]]
+name = "prices"
+label = "$"
+folder = "prices"
+templated = false
+landing = "Services and pricing."

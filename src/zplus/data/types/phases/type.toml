@@ -1,0 +1,6 @@
+[[type]]
+name = "phases"
+label = "Phases"
+folder = "phases"
+templated = false
+landing = "The phased plan and where things stand."

@@ -23,7 +23,9 @@ class DocType:
     name: str
     label: str
     folder: str
-    template: str
+    template: str = ""
+    templated: bool = True      # False = a non-templated "section" (grows via add-page)
+    landing: str = ""           # optional index.md intro text for the section
     sections: list = field(default_factory=list)
 
 
@@ -58,9 +60,12 @@ def from_dict(data, source="<dict>"):
     types = []
     seen = set()
     for t in data.get("type", []):
-        for key in ("name", "label", "folder", "template"):
+        for key in ("name", "label", "folder"):
             if key not in t:
                 raise ValueError(f"{source}: a [[type]] is missing required '{key}'")
+        templated = t.get("templated", True)
+        if templated and "template" not in t:
+            raise ValueError(f"{source}: templated type '{t['name']}' needs 'template'")
         if t["name"] in seen:
             raise ValueError(f"{source}: duplicate type name '{t['name']}'")
         seen.add(t["name"])
@@ -77,7 +82,8 @@ def from_dict(data, source="<dict>"):
             sections.append(Section(heading=s["heading"], shape=shape,
                                     prompt=s.get("prompt", "")))
         types.append(DocType(name=t["name"], label=t["label"],
-                             folder=t["folder"], template=t["template"],
+                             folder=t["folder"], template=t.get("template", ""),
+                             templated=templated, landing=t.get("landing", ""),
                              sections=sections))
     return Manifest(project=project, types=types)
 

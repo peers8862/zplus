@@ -1,0 +1,6 @@
+[[type]]
+name = "docs"
+label = "Docs"
+folder = "docs"
+templated = false
+landing = "Reference documents and maps."

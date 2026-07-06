@@ -1,0 +1,6 @@
+[[type]]
+name = "project-hub"
+label = "Project Hub"
+folder = "project-hub"
+templated = false
+landing = "The hub's front matter — orientation and starting points."

@@ -41,7 +41,8 @@ class TestRegenerate(unittest.TestCase):
             with open(os.path.join(proj, "zensical.toml"), "w") as f:
                 f.write('[project]\nsite_name = "X"\n')
             self.assertEqual(nav.regenerate(proj), 1)
-            toml = open(os.path.join(proj, "zensical.toml")).read()
+            with open(os.path.join(proj, "zensical.toml")) as fh:
+                toml = fh.read()
             self.assertIn('{ "Ideas" = ["ideas/index.md"] }', toml)
 
 

@@ -3,6 +3,7 @@ name = "automation"
 label = "Automations"
 folder = "automations"
 template = "automation.md"
+landing = "Automation outlines, newest first."
   [[type.section]]
   heading = "Overview"
   shape = "prose"

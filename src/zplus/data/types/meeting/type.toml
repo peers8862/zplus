@@ -3,6 +3,7 @@ name = "meeting"
 label = "Meetings"
 folder = "work/meetings"
 template = "meeting.md"
+landing = "Meeting notes, newest first."
   [[type.section]]
   heading = "Agenda"
   shape = "list"

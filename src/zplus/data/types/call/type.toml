@@ -3,6 +3,7 @@ name = "call"
 label = "Calls"
 folder = "work/calls"
 template = "call.md"
+landing = "Call notes, newest first."
   [[type.section]]
   heading = "Topics"
   shape = "list"

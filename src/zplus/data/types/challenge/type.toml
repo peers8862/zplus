@@ -3,6 +3,7 @@ name = "challenge"
 label = "Challenges"
 folder = "business-challenges"
 template = "challenge.md"
+landing = "Business challenges — one page each, newest first."
   [[type.section]]
   heading = "The issue"
   shape = "prose"
