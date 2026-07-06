@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 
 from .. import manifest as manifest_mod
+from . import derived
 from . import nav
 
 _REMEMBER_FIND = (
@@ -33,6 +34,7 @@ def load_env(project_dir):
 
 
 def serve(project_dir):
+    derived.gen_derived(project_dir)
     nav.regenerate(project_dir)
     subprocess.call(["bash", "-c",
                      "command -v fuser >/dev/null && fuser -k 8000/tcp >/dev/null 2>&1 || true"])
@@ -46,6 +48,7 @@ def build(project_dir, env=None):
     if not password:
         raise SystemExit("error: SITE_PASSWORD not set (put it in .env) — "
                          "refusing to build an unprotected site")
+    derived.gen_derived(project_dir)
     nav.regenerate(project_dir)
     subprocess.check_call(["zensical", "build", "--clean"], cwd=project_dir)
 
