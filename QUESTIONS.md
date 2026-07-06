@@ -49,7 +49,7 @@ add open questions to settle before/within the phase that builds each.
 |---|---|---|---|
 | 19 | Field type system | Add `fields` to `[[type]]` (`text/enum/multi-enum/date/number/bool/owner/status/ref`), stored in entry front-matter. OK to grow the `Section`/`DocType` dataclasses + `VALID_SHAPES` (add table/fields/diagram/callout/links)? | B |
 | 20 | `ref` = graph edges | Refs point at entries by slug; `zplus check` fails on dangling; backlinks/rollups computed at build. Confirm **within-site only** for now (cross-site = plain URLs). | B |
-| 21 | `order` generalizes `templated` | Introduce `order = date-desc\|alpha\|manual\|status`, with `templated` kept as shorthand (true≈date-desc). Acceptable, or keep the bool? | B |
+| 21 | `order` generalizes `templated` | Introduce `order` on a type. **Decided (2026-07-06):** implement `alpha` (A→Z) first; **defer `alpha-desc` (Z→A) and `date-asc` (oldest-first)** as known future needs. `templated` stays shorthand (true ≈ `date-desc`, newest-first). | B1 (built last) |
 | 22 | Status workflows | Model `status` as a per-type state machine (the maturity ladder etc.). Where does the workflow definition live — in the type fragment `type.toml`? | B |
 | 23 | Attention Feed | One generated page from status + staleness + missing-owner across all collections. What are the default "needs attention" rules (e.g. review cadence source)? | B |
 | 24 | corpus.json + staticrypt | Emit `corpus.json` / `llms.txt` beside the HTML, **unencrypted** (same bucket as today's `search.json`). Accept the disclosure trade per site? | C |
@@ -62,3 +62,8 @@ all 22 sections in grouped order, and `zensical build` reports "No issues found.
 edges that motivate Phase B, as predicted: the nav is a flat 22-item list (no
 grouping/nesting); the reused `meeting` type sits under `work/meetings` (folder mismatch
 with the flat admin folders, cf. #18); and there are no typed fields/refs/status yet.
+
+**Phase B sequencing (2026-07-06):** B2 (typed fields + `ref` graph + `check`) → B3
+(derived rendering: dashboards, backlinks, Attention Feed, `corpus.json`) → B4
+(views/boards/faceting) → **B1 (order strategies) last**. Rendering uses generated
+markdown/JSON emitted **before** `zensical build` — no plugin system needed.
