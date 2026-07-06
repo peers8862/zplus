@@ -8,7 +8,9 @@ from dataclasses import dataclass, field
 
 from . import paths
 
-VALID_SHAPES = {"prose", "list", "task"}
+VALID_SHAPES = {"prose", "list", "task", "diagram"}
+VALID_FIELD_TYPES = {"text", "enum", "multi-enum", "date", "number",
+                     "bool", "owner", "status", "ref"}
 
 
 @dataclass
@@ -16,6 +18,16 @@ class Section:
     heading: str
     shape: str = "prose"
     prompt: str = ""
+
+
+@dataclass
+class Field:
+    name: str
+    type: str = "text"
+    required: bool = False
+    values: list = field(default_factory=list)
+    ref: str = ""
+    many: bool = False
 
 
 @dataclass
@@ -27,6 +39,7 @@ class DocType:
     templated: bool = True      # False = a non-templated "section" (grows via add-page)
     landing: str = ""           # optional index.md intro text for the section
     sections: list = field(default_factory=list)
+    fields: list = field(default_factory=list)
 
 
 @dataclass
@@ -81,10 +94,33 @@ def from_dict(data, source="<dict>"):
                     f"'{t['name']}/{s['heading']}' (use prose|list|task)")
             sections.append(Section(heading=s["heading"], shape=shape,
                                     prompt=s.get("prompt", "")))
+        fields = []
+        for fdef in t.get("field", []):
+            if "name" not in fdef:
+                raise ValueError(
+                    f"{source}: a field in type '{t['name']}' is missing 'name'")
+            ftype = fdef.get("type", "text")
+            if ftype not in VALID_FIELD_TYPES:
+                raise ValueError(
+                    f"{source}: invalid field type '{ftype}' in "
+                    f"'{t['name']}/{fdef['name']}'")
+            if ftype == "ref" and not fdef.get("ref"):
+                raise ValueError(
+                    f"{source}: ref field '{t['name']}/{fdef['name']}' "
+                    f"needs a 'ref' target type")
+            if ftype in ("enum", "multi-enum", "status") and not fdef.get("values"):
+                raise ValueError(
+                    f"{source}: {ftype} field '{t['name']}/{fdef['name']}' "
+                    f"needs 'values'")
+            fields.append(Field(name=fdef["name"], type=ftype,
+                                required=fdef.get("required", False),
+                                values=fdef.get("values", []),
+                                ref=fdef.get("ref", ""),
+                                many=fdef.get("many", False)))
         types.append(DocType(name=t["name"], label=t["label"],
                              folder=t["folder"], template=t.get("template", ""),
                              templated=templated, landing=t.get("landing", ""),
-                             sections=sections))
+                             sections=sections, fields=fields))
     return Manifest(project=project, types=types)
 
 
