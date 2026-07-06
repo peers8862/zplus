@@ -52,8 +52,11 @@ def gen_derived(project_dir):
 
     with open(os.path.join(project_dir, "corpus.json"), "w", encoding="utf-8") as f:
         json.dump(render.corpus_to_dict(c), f, indent=2)
+    with open(os.path.join(project_dir, "llms.txt"), "w", encoding="utf-8") as f:
+        f.write(render.llms_txt(c, m))
 
-    print(f"zplus gen-derived: {n_dash} dashboard(s), action center, corpus.json")
+    print(f"zplus gen-derived: {n_dash} dashboard(s), action center, "
+          f"graph, corpus.json, llms.txt")
     return 0
 
 

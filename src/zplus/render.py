@@ -178,6 +178,25 @@ def graph_mermaid(corpus, m):
     return "\n".join(lines)
 
 
+def llms_txt(corpus, m):
+    """A plain-text index for agents (llms.txt convention), pointing at corpus.json."""
+    by_type = {}
+    for e in corpus.entries:
+        by_type.setdefault(e.type_name, []).append(e)
+    lines = ["# zplus site — machine-readable index", "",
+             "Structured data for every entry (fields + resolved refs + backlinks): "
+             "./corpus.json", ""]
+    for t in m.types:
+        ents = by_type.get(t.name)
+        if not ents:
+            continue
+        lines.append(f"## {t.label}")
+        for e in sorted(ents, key=lambda e: e.slug):
+            lines.append(f"- {e.title} ({t.folder}/{e.slug}.md)")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def corpus_to_dict(corpus):
     return {"entries": [
         {"type": e.type_name, "slug": e.slug, "title": e.title,
