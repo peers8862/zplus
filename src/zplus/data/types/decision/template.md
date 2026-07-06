@@ -1,6 +1,9 @@
 ---
 date: YYYY-MM-DD
 title: Decision title
+owner:
+status:
+supersedes: []
 ---
 # Decision title — YYYY-MM-DD
 

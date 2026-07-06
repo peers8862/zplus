@@ -20,3 +20,17 @@ landing = "Standard operating procedures — how we do things."
   heading = "Notes"
   shape = "prose"
   prompt = "Edge cases, gotchas, links."
+  [[type.field]]
+  name = "owner"
+  type = "ref"
+  ref = "role"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["draft", "active", "deprecated"]
+  [[type.field]]
+  name = "uses"
+  type = "ref"
+  ref = "system"
+  many = true

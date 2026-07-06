@@ -26,3 +26,21 @@ landing = "Automation outlines, newest first."
   heading = "Business considerations"
   shape = "prose"
   prompt = "Costs, risks, dependencies, approvals, or anything else to weigh."
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["manual", "assisted", "supervised", "autonomous"]
+  [[type.field]]
+  name = "touches"
+  type = "ref"
+  ref = "system"
+  many = true
+  [[type.field]]
+  name = "governed_by"
+  type = "ref"
+  ref = "policy"
+  many = true

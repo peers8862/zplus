@@ -1,6 +1,9 @@
 ---
 date: YYYY-MM-DD
 title: Procedure title
+owner:
+status:
+uses: []
 ---
 # Procedure title — YYYY-MM-DD
 

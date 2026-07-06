@@ -159,5 +159,25 @@ class DiagramShape(unittest.TestCase):
         self.assertTrue(out.rstrip().endswith("```"))
 
 
+class AdminFields(unittest.TestCase):
+    def test_graph_types_declare_expected_ref_fields(self):
+        m = manifest.resolve_profile("administration")
+        by = {t.name: t for t in m.types}
+        agent_refs = {f.name: f.ref for f in by["agent"].fields if f.type == "ref"}
+        self.assertEqual(agent_refs.get("runs"), "automation")
+        self.assertEqual(agent_refs.get("governed_by"), "policy")
+        auto_refs = {f.name: f.ref for f in by["automation"].fields if f.type == "ref"}
+        self.assertEqual(auto_refs.get("touches"), "system")
+        for name in ["agent", "automation", "decision", "incident", "procedure"]:
+            owners = [f for f in by[name].fields if f.name == "owner"]
+            self.assertTrue(owners and owners[0].required, f"{name} needs required owner")
+
+    def test_templates_have_field_keys(self):
+        from zplus import paths
+        agent_tpl = paths.read_type_template("agent").decode("utf-8")
+        for key in ("owner:", "status:", "runs:", "governed_by:"):
+            self.assertIn(key, agent_tpl)
+
+
 if __name__ == "__main__":
     unittest.main()

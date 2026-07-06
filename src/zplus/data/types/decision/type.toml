@@ -24,3 +24,16 @@ landing = "Decisions — context, options, and the call. Newest first."
   heading = "Consequences"
   shape = "list"
   prompt = "What follows — actions and things to watch."
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["proposed", "decided", "superseded"]
+  [[type.field]]
+  name = "supersedes"
+  type = "ref"
+  ref = "decision"
+  many = true

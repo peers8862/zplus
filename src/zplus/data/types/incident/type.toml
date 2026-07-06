@@ -20,3 +20,20 @@ landing = "Incidents and postmortems — what broke and what we learned. Newest 
   heading = "Prevention"
   shape = "task"
   prompt = "Changes to stop a recurrence."
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "severity"
+  type = "enum"
+  values = ["low", "medium", "high", "critical"]
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["open", "mitigated", "resolved", "postmortem"]
+  [[type.field]]
+  name = "involved"
+  type = "ref"
+  ref = "system"
+  many = true

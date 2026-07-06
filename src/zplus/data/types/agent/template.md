@@ -1,6 +1,10 @@
 ---
 date: YYYY-MM-DD
 title: Agent title
+owner:
+status:
+runs: []
+governed_by: []
 ---
 # Agent title — YYYY-MM-DD
 

@@ -24,3 +24,21 @@ landing = "AI agents in play — the software workforce. Newest first."
   heading = "Notes"
   shape = "prose"
   prompt = "Automations it runs, incidents, governing policies."
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["manual", "assisted", "supervised", "autonomous"]
+  [[type.field]]
+  name = "runs"
+  type = "ref"
+  ref = "automation"
+  many = true
+  [[type.field]]
+  name = "governed_by"
+  type = "ref"
+  ref = "policy"
+  many = true

@@ -1,6 +1,10 @@
 ---
 date: YYYY-MM-DD
 title: Automation title
+owner:
+status:
+touches: []
+governed_by: []
 ---
 # Automation title — YYYY-MM-DD
 
