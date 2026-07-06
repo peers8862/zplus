@@ -179,5 +179,33 @@ class AdminFields(unittest.TestCase):
             self.assertIn(key, agent_tpl)
 
 
+class IntegrationAdmin(unittest.TestCase):
+    def _scaffold(self, d):
+        with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+            f.write(manifest.resolve_profile_text("administration"))
+        _write(os.path.join(d, "docs", "systems", "billing.md"),
+               "---\ntitle: Billing\n---\n# Billing\n")
+        _write(os.path.join(d, "docs", "automations", "invoice-import.md"),
+               "---\ntitle: Invoice Import\nowner: steve\n"
+               "status: supervised\ntouches: [billing]\ngoverned_by: []\n---\n# Invoice Import\n")
+
+    def test_clean_scaffold_checks_ok_and_backlinks(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._scaffold(d)
+            self.assertEqual(check_cmd.run(d), 0)
+            m = manifest.resolve_profile("administration")
+            c = corpus_mod.resolve(corpus_mod.read_corpus(d, m), m)
+            self.assertEqual(c.get("billing").backlinks[("automation", "touches")],
+                             ["invoice-import"])
+
+    def test_broken_ref_fails_check(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._scaffold(d)
+            _write(os.path.join(d, "docs", "automations", "bad.md"),
+                   "---\ntitle: Bad\nowner: steve\nstatus: supervised\n"
+                   "touches: [ghost-system]\n---\n# Bad\n")
+            self.assertEqual(check_cmd.run(d), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
