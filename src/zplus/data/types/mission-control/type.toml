@@ -1,0 +1,6 @@
+[[type]]
+name = "mission-control"
+label = "Mission Control"
+folder = "mission-control"
+templated = false
+landing = "Start here: what this site is, how to use it, and where everything lives."

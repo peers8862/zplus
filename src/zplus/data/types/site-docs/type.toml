@@ -1,0 +1,6 @@
+[[type]]
+name = "site-docs"
+label = "Site Docs"
+folder = "site-docs"
+templated = false
+landing = "About this site: how to add entries and how the tooling works."

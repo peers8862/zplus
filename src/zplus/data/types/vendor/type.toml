@@ -1,0 +1,6 @@
+[[type]]
+name = "vendor"
+label = "Vendors"
+folder = "vendors"
+templated = false
+landing = "Who we buy from: one page per vendor."

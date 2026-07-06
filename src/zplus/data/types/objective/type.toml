@@ -1,0 +1,6 @@
+[[type]]
+name = "objective"
+label = "Objectives"
+folder = "objectives"
+templated = false
+landing = "Strategy and OKRs: one page per objective period."

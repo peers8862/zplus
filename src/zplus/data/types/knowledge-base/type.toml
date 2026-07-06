@@ -1,0 +1,6 @@
+[[type]]
+name = "knowledge-base"
+label = "Knowledge Base"
+folder = "knowledge-base"
+templated = false
+landing = "How-tos and cross-cutting reference."

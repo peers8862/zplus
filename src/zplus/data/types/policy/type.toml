@@ -1,0 +1,6 @@
+[[type]]
+name = "policy"
+label = "Policies"
+folder = "policies"
+templated = false
+landing = "The rules we operate by: one page per policy."

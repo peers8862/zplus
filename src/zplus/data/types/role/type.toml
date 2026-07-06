@@ -1,0 +1,6 @@
+[[type]]
+name = "role"
+label = "Roles"
+folder = "roles"
+templated = false
+landing = "Who does what: one page per role."

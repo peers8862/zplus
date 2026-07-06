@@ -1,0 +1,6 @@
+[[type]]
+name = "system"
+label = "Systems"
+folder = "systems"
+templated = false
+landing = "The tools and services we run on: one page per system."

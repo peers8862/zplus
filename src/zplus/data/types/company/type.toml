@@ -1,0 +1,6 @@
+[[type]]
+name = "company"
+label = "Company"
+folder = "company"
+templated = false
+landing = "Who we are: overview, mission, values, and the company record."
