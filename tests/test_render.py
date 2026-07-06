@@ -48,5 +48,41 @@ landing = "x"
         self.assertIn("| 1 |", table)    # one inbound backlink
 
 
+class ActionCenter(unittest.TestCase):
+    def _m(self):
+        return manifest.loads('''
+[[type]]
+name = "incident"
+label = "Incidents"
+folder = "incidents"
+template = "incident.md"
+landing = "x"
+  [[type.field]]
+  name = "owner"
+  type = "owner"
+  required = true
+  [[type.field]]
+  name = "status"
+  type = "status"
+  values = ["open", "resolved"]
+''', source="t")
+
+    def test_flags_unowned_open_and_dangling(self):
+        m = self._m()
+        e = Entry("incident", "inc-1", "Outage", "p",
+                  {"owner": "", "status": "open"}, {})
+        md = render.action_center_markdown(_corpus([e]), m)
+        self.assertIn("Needs an owner", md)
+        self.assertIn("Open / in progress", md)
+        self.assertIn("../incidents/inc-1.md", md)
+
+    def test_corpus_to_dict_shape(self):
+        e = Entry("incident", "inc-1", "Outage", "p", {"status": "open"}, {})
+        e.backlinks = {("automation", "touches"): ["a1"]}
+        d = render.corpus_to_dict(_corpus([e]))
+        self.assertEqual(d["entries"][0]["slug"], "inc-1")
+        self.assertEqual(d["entries"][0]["backlinks"], {"automation.touches": ["a1"]})
+
+
 if __name__ == "__main__":
     unittest.main()
