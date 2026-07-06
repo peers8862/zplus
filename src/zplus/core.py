@@ -6,9 +6,29 @@ and tested without touching a real project tree.
 import os
 import re
 
+import yaml
+
 # Word-form suffixes for same-day/same-title filename collisions.
 ORDINALS = {2: "TWO", 3: "THREE", 4: "FOUR", 5: "FIVE", 6: "SIX",
             7: "SEVEN", 8: "EIGHT", 9: "NINE", 10: "TEN"}
+
+
+def split_front_matter(text):
+    """Split a markdown doc into (front_matter_dict, body).
+
+    Recognizes a leading YAML block fenced by lines of exactly '---'. Returns
+    ({}, text) when there is no valid front matter.
+    """
+    if not text.startswith("---"):
+        return {}, text
+    lines = text.split("\n")
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            data = yaml.safe_load("\n".join(lines[1:i])) or {}
+            if not isinstance(data, dict):
+                data = {}
+            return data, "\n".join(lines[i + 1:])
+    return {}, text
 
 
 def slugify(title):

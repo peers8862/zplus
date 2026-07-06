@@ -11,7 +11,7 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Morgen Peers" }]
 keywords = ["zensical", "mkdocs", "static-site", "toolkit"]
-dependencies = []
+dependencies = ["pyyaml>=6"]
 # Runtime tools invoked as subprocesses (not Python deps): zensical, node/npx
 # (for staticrypt), git.
 
