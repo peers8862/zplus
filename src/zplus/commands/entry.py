@@ -10,7 +10,7 @@ import subprocess
 import sys
 from datetime import date
 
-from .. import core, manifest as manifest_mod
+from .. import core, manifest as manifest_mod, corpus as corpus_mod
 
 _HINT = {"task": "one per line", "list": "one bullet per line",
          "prose": "type freely", "diagram": "mermaid syntax, one line per row"}
@@ -109,6 +109,80 @@ def _pick_type(types):
     raise SystemExit(f"error: pick 1–{len(types)} or a type name")
 
 
+def _choose(values, required):
+    """Numbered menu; return the chosen value or '' to skip (if not required)."""
+    for i, v in enumerate(values, 1):
+        print(f"  [{i}] {v}")
+    while True:
+        raw = input("  > ").strip()
+        if not raw:
+            if required:
+                print("  (required)")
+                continue
+            return ""
+        if raw.isdigit() and 1 <= int(raw) <= len(values):
+            return values[int(raw) - 1]
+        if raw in values:
+            return raw
+        print(f"  pick 1–{len(values)} or a listed value")
+
+
+def _pick_ref(candidates):
+    """One ref pick: return a slug, or None on blank. Accepts a number or a slug."""
+    raw = input("  > ").strip()
+    if not raw:
+        return None
+    if raw.isdigit() and 1 <= int(raw) <= len(candidates):
+        return candidates[int(raw) - 1][0]
+    return raw
+
+
+def _choose_refs(candidates, many, required):
+    for i, (slug, title) in enumerate(candidates, 1):
+        print(f"  [{i}] {title} ({slug})")
+    if not many:
+        while True:
+            v = _pick_ref(candidates)
+            if v is None:
+                if required:
+                    print("  (required)")
+                    continue
+                return ""
+            return v
+    print("  (one per line — blank line when done)")
+    chosen = []
+    while True:
+        v = _pick_ref(candidates)
+        if v is None:
+            break
+        chosen.append(v)
+    return chosen
+
+
+def fill_fields(text, doc_type, project_dir):
+    """Prompt each declared field and inject answers into the front matter."""
+    if not doc_type.fields:
+        return text
+    m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
+    corpus = corpus_mod.resolve(corpus_mod.read_corpus(project_dir, m), m)
+    print("Fields:")
+    for f in doc_type.fields:
+        req = " (required)" if f.required else ""
+        print(f"{f.name}{req}  [{f.type}]")
+        if f.type in ("enum", "status"):
+            value = _choose(f.values, f.required)
+        elif f.type == "ref":
+            cands = [(e.slug, e.title) for e in corpus.entries if e.type_name == f.ref]
+            value = _choose_refs(cands, f.many, f.required)
+        elif f.required:
+            value = ask("  > ")
+        else:
+            value = ask("  > ", default="")
+        if value not in (None, "", []):
+            text = core.set_front_matter_value(text, f.name, value)
+    return text
+
+
 def create(project_dir, fill=False):
     m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
     types = [t for t in m.types if t.templated]
@@ -127,6 +201,7 @@ def create(project_dir, fill=False):
     path, suffix = core.resolve_collision(folder, entry_date, core.slugify(title))
     text = core.stamp(text, title, entry_date, suffix)
     if fill:
+        text = fill_fields(text, doc_type, project_dir)
         text = run_fill(text, doc_type)
     os.makedirs(folder, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
