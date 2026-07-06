@@ -78,6 +78,21 @@ def stamp(template_text, title, date, suffix_word=None):
     return text
 
 
+def render_fm_value(value):
+    """Render a front-matter value: lists as [a, b], scalars as str."""
+    if isinstance(value, list):
+        return "[" + ", ".join(str(v) for v in value) + "]"
+    return str(value)
+
+
+def set_front_matter_value(text, key, value):
+    """Replace `key:`'s value in the leading front matter. No-op if key absent."""
+    pat = re.compile(rf"(?m)^{re.escape(key)}:.*$")
+    if not pat.search(text):
+        return text
+    return pat.sub(f"{key}: {render_fm_value(value)}", text, count=1)
+
+
 def section_shape(placeholder_body):
     """Classify a template section body: 'task' | 'list' | 'prose'.
 
