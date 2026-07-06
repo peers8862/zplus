@@ -75,5 +75,50 @@ class FieldModel(unittest.TestCase):
         self.assertIn("diagram", manifest.VALID_SHAPES)
 
 
+from zplus import corpus as corpus_mod
+
+
+def _write(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
+AGENT_TYPES = manifest.loads(FIELD_FRAG + '''
+[[type]]
+name = "automation"
+label = "Automations"
+folder = "automations"
+template = "automation.md"
+landing = "Automations."
+''', source="fixture")
+
+
+class CorpusGraph(unittest.TestCase):
+    def _project(self, d):
+        _write(os.path.join(d, "docs", "automations", "invoice-import.md"),
+               "---\ntitle: Invoice Import\n---\n# Invoice Import\n")
+        _write(os.path.join(d, "docs", "agents", "invoice-bot.md"),
+               "---\ntitle: Invoice Bot\nowner: steve\n"
+               "status: supervised\nruns: [invoice-import]\n---\n# Invoice Bot\n")
+
+    def test_reads_entries_and_declared_fields(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d)
+            c = corpus_mod.read_corpus(d, AGENT_TYPES)
+            slugs = sorted(e.slug for e in c.entries)
+            self.assertEqual(slugs, ["invoice-bot", "invoice-import"])
+            bot = c.get("invoice-bot")
+            self.assertEqual(bot.fields["owner"], "steve")
+            self.assertEqual(bot.fields["runs"], ["invoice-import"])
+
+    def test_resolve_populates_backlinks_on_target(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d)
+            c = corpus_mod.resolve(corpus_mod.read_corpus(d, AGENT_TYPES), AGENT_TYPES)
+            target = c.get("invoice-import")
+            self.assertEqual(target.backlinks[("agent", "runs")], ["invoice-bot"])
+
+
 if __name__ == "__main__":
     unittest.main()
