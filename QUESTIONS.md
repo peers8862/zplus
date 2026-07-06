@@ -55,6 +55,7 @@ add open questions to settle before/within the phase that builds each.
 | 24 | corpus.json + staticrypt | Emit `corpus.json` / `llms.txt` beside the HTML, **unencrypted** (same bucket as today's `search.json`). Accept the disclosure trade per site? | C |
 | 25 | AI onboarding boundary | `zplus new --describe` / "let AI suggest" proposes a profile + seed entries. How much does the CLI call a model vs. stay deterministic with an optional AI step (which model/key)? | C |
 | 26 | save-profile → package | Ship a `--to-package` dev flag (write a profile into package source, not the user library), or keep built-in profiles hand-authored? | C |
+| 27 | Mermaid diagrams | Enabled by default (`zensical new` ships the superfence — renders today). **Decided (2026-07-06):** systematization deferred to the B-phase — `diagram` section shape (B2), generated corpus-graph diagrams (B3), generated status-workflow diagrams (B4). No Phase-A diagram seeding. | B2/B3/B4 |
 
 **Phase A landed (2026-07-06).** The `administration` profile stands up cleanly:
 `zplus new x --profile administration` → 22 landings + 9 templates, the managed nav lists
