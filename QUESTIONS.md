@@ -23,3 +23,35 @@ place we can revisit. Newest at the bottom.
 | 16 | **add-type/add-profile interactive-only** | Both are interactive prompts (no CLI flags for non-interactive/scripted creation yet). | Revisit if you want `--section`/`--types` flags for scripting or automation. |
 | 17 | **Two kinds of type + `add-page`** | Types have a `templated` flag: **templated** (dated entries via `new-entry`) vs **section** (non-templated nav folders whose plain pages come from `zplus add-page` — name + optional text blocks). Any type may carry `landing` text → the folder's `index.md` on apply. `new-entry` lists templated only; `add-page` lists sections only. Templated nav orders newest-first; sections order A→Z. | — |
 | 18 | **projecthub mirrors the ABS hub nav** | The `projecthub` profile now reproduces the full ABS-hub top nav: 7 non-templated sections (Project Hub · Spokes · Phases · Work · Docs · AI · $) + the 8 templated logs, in ABS order. All 15 carry a brief one-line `landing` so a fresh site shows the whole nav skeleton immediately. | Landings are generic placeholders — edit per site. Revisit the section→folder mapping (e.g. "Project Hub" → folder `project-hub`). |
+
+---
+
+## Design-stage — profiles & authoring
+
+From the forward architecture spec `docs/design-profiles-and-authoring.md` (2026-07-06),
+reconciled with shipped SP1/SP2. These are *not yet built* — they update items above and
+add open questions to settle before/within the phase that builds each.
+
+**Prior items the design now addresses:**
+
+- **#13** — `administration` sections are now conceived: design §9 defines the full nav +
+  14 types. It ships as a **bundled** profile authored into `data/` like `projecthub`.
+- **#14** — the `save-profile` "dogfood a live site → ship it" path *depends on* a
+  `--to-package` flag; promoted from "revisit if" to a planned Phase-C item.
+- **#16** — non-interactive/scripted authoring (flags) becomes a first-class requirement
+  (population modes 4–5); planned Phase C.
+- **#9 / #17** — empty-folder handling is considered resolved: every collection carries a
+  `landing`, so a fresh site shows the skeleton; the design assumes this.
+
+**New open questions (design-stage):**
+
+| # | Topic | Question / proposed default | Phase |
+|---|---|---|---|
+| 19 | Field type system | Add `fields` to `[[type]]` (`text/enum/multi-enum/date/number/bool/owner/status/ref`), stored in entry front-matter. OK to grow the `Section`/`DocType` dataclasses + `VALID_SHAPES` (add table/fields/diagram/callout/links)? | B |
+| 20 | `ref` = graph edges | Refs point at entries by slug; `zplus check` fails on dangling; backlinks/rollups computed at build. Confirm **within-site only** for now (cross-site = plain URLs). | B |
+| 21 | `order` generalizes `templated` | Introduce `order = date-desc\|alpha\|manual\|status`, with `templated` kept as shorthand (true≈date-desc). Acceptable, or keep the bool? | B |
+| 22 | Status workflows | Model `status` as a per-type state machine (the maturity ladder etc.). Where does the workflow definition live — in the type fragment `type.toml`? | B |
+| 23 | Attention Feed | One generated page from status + staleness + missing-owner across all collections. What are the default "needs attention" rules (e.g. review cadence source)? | B |
+| 24 | corpus.json + staticrypt | Emit `corpus.json` / `llms.txt` beside the HTML, **unencrypted** (same bucket as today's `search.json`). Accept the disclosure trade per site? | C |
+| 25 | AI onboarding boundary | `zplus new --describe` / "let AI suggest" proposes a profile + seed entries. How much does the CLI call a model vs. stay deterministic with an optional AI step (which model/key)? | C |
+| 26 | save-profile → package | Ship a `--to-package` dev flag (write a profile into package source, not the user library), or keep built-in profiles hand-authored? | C |
