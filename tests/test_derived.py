@@ -72,5 +72,22 @@ class IntegrationDerived(unittest.TestCase):
             self.assertIn("mission-control/action-center.md", zt)
 
 
+class GraphPage(unittest.TestCase):
+    def test_writes_graph_md_under_mission_control(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+                f.write(manifest.resolve_profile_text("administration"))
+            _write(os.path.join(d, "docs", "mission-control", "index.md"),
+                   "# Mission Control\n")
+            _write(os.path.join(d, "docs", "systems", "billing.md"),
+                   "---\ntitle: Billing\n---\n# Billing\n")
+            _write(os.path.join(d, "docs", "automations", "imp.md"),
+                   "---\ntitle: Import\nowner: s\nstatus: manual\ntouches: [billing]\n---\n# Import\n")
+            derived.gen_derived(d)
+            graph = os.path.join(d, "docs", "mission-control", "graph.md")
+            self.assertTrue(os.path.exists(graph))
+            self.assertIn("-->|touches|", open(graph, encoding="utf-8").read())
+
+
 if __name__ == "__main__":
     unittest.main()
