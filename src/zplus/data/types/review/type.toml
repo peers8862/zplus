@@ -1,0 +1,26 @@
+[[type]]
+name = "review"
+label = "Reviews"
+folder = "reviews"
+template = "review.md"
+landing = "Business reviews — the operating heartbeat. Newest first."
+  [[type.section]]
+  heading = "Period"
+  shape = "prose"
+  prompt = "Which cadence and dates this review covers."
+  [[type.section]]
+  heading = "Scorecard"
+  shape = "list"
+  prompt = "The numbers that matter this period."
+  [[type.section]]
+  heading = "What happened"
+  shape = "prose"
+  prompt = "Highlights, lowlights, notable events."
+  [[type.section]]
+  heading = "Issues"
+  shape = "list"
+  prompt = "Problems to resolve."
+  [[type.section]]
+  heading = "Next"
+  shape = "task"
+  prompt = "Actions into the next period."

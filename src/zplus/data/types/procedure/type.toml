@@ -1,0 +1,22 @@
+[[type]]
+name = "procedure"
+label = "Procedures"
+folder = "procedures"
+template = "procedure.md"
+landing = "Standard operating procedures — how we do things."
+  [[type.section]]
+  heading = "Purpose"
+  shape = "prose"
+  prompt = "What this procedure achieves and when to use it."
+  [[type.section]]
+  heading = "Owner"
+  shape = "prose"
+  prompt = "The role responsible for this procedure."
+  [[type.section]]
+  heading = "Steps"
+  shape = "task"
+  prompt = "The procedure, step by step."
+  [[type.section]]
+  heading = "Notes"
+  shape = "prose"
+  prompt = "Edge cases, gotchas, links."

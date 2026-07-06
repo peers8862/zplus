@@ -1,0 +1,22 @@
+[[type]]
+name = "incident"
+label = "Incidents"
+folder = "incidents"
+template = "incident.md"
+landing = "Incidents and postmortems — what broke and what we learned. Newest first."
+  [[type.section]]
+  heading = "What happened"
+  shape = "prose"
+  prompt = "The incident, plainly."
+  [[type.section]]
+  heading = "Impact"
+  shape = "prose"
+  prompt = "Who and what was affected, and how badly."
+  [[type.section]]
+  heading = "Resolution"
+  shape = "list"
+  prompt = "Steps taken to mitigate and resolve."
+  [[type.section]]
+  heading = "Prevention"
+  shape = "task"
+  prompt = "Changes to stop a recurrence."

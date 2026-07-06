@@ -1,0 +1,26 @@
+[[type]]
+name = "decision"
+label = "Decisions"
+folder = "decisions"
+template = "decision.md"
+landing = "Decisions — context, options, and the call. Newest first."
+  [[type.section]]
+  heading = "Context"
+  shape = "prose"
+  prompt = "What decision is needed, and why now."
+  [[type.section]]
+  heading = "Options"
+  shape = "list"
+  prompt = "The choices considered."
+  [[type.section]]
+  heading = "Decision"
+  shape = "prose"
+  prompt = "The call made, and by whom."
+  [[type.section]]
+  heading = "Rationale"
+  shape = "prose"
+  prompt = "Why this option; trade-offs accepted."
+  [[type.section]]
+  heading = "Consequences"
+  shape = "list"
+  prompt = "What follows — actions and things to watch."

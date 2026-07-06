@@ -1,0 +1,26 @@
+[[type]]
+name = "agent"
+label = "Agents"
+folder = "agents"
+template = "agent.md"
+landing = "AI agents in play — the software workforce. Newest first."
+  [[type.section]]
+  heading = "Brief"
+  shape = "prose"
+  prompt = "What this agent does, in a line or two."
+  [[type.section]]
+  heading = "Scope and tools"
+  shape = "list"
+  prompt = "What it can touch; systems and permissions."
+  [[type.section]]
+  heading = "Guardrails"
+  shape = "list"
+  prompt = "Limits, approvals required, oversight."
+  [[type.section]]
+  heading = "Owner and status"
+  shape = "prose"
+  prompt = "Who owns it; maturity (manual, assisted, supervised, autonomous)."
+  [[type.section]]
+  heading = "Notes"
+  shape = "prose"
+  prompt = "Automations it runs, incidents, governing policies."
