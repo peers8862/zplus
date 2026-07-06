@@ -13,7 +13,8 @@ Full documentation lives in **[`docs/guide/`](docs/guide/index.md)**:
 - [Getting started](docs/guide/getting-started.md) · [Concepts](docs/guide/concepts.md) ·
   [Authoring](docs/guide/authoring.md) · [Fields & the graph](docs/guide/fields-and-graph.md)
 - [Derived output](docs/guide/derived-output.md) ·
-  [Profiles & tailoring](docs/guide/profiles-and-tailoring.md) ·
+  [Profiles & tailoring](docs/guide/profiles-and-tailoring.md)
+- [Commands guide](docs/guide/commands-guide.md) (full walkthrough) ·
   [CLI reference](docs/guide/cli-reference.md) · [zplus & AI agents](docs/guide/for-ai-agents.md)
 
 ## Install

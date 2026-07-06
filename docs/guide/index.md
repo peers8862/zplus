@@ -46,5 +46,6 @@ and `git` at runtime.
 4. [Fields & the graph](fields-and-graph.md) — typed data, refs, status workflows, `check`.
 5. [Derived output](derived-output.md) — what the build generates.
 6. [Profiles & tailoring](profiles-and-tailoring.md) — customize per enterprise.
-7. [CLI reference](cli-reference.md) — every command.
-8. [zplus & AI agents](for-ai-agents.md) — using the corpus with machines.
+7. [Commands guide](commands-guide.md) — the full journey + every command in context.
+8. [CLI reference](cli-reference.md) — every command, as a terse lookup table.
+9. [zplus & AI agents](for-ai-agents.md) — using the corpus with machines.
