@@ -1,9 +1,20 @@
 # zplus
 
-A pip-installable toolkit of [Zensical](https://zensical.org) customizations for
-new or existing sites. Doc types are data (a per-project `zplus.toml` manifest),
-so the engine can be improved centrally (`pip install -U`) without touching your
-content, and new doc types are just rows in a file.
+A pip-installable toolkit for building [Zensical](https://zensical.org) sites whose
+content is **structured data**, not just prose. Doc types are declared once in a
+per-project `zplus.toml` manifest; zplus scaffolds the site, helps you (and your AI agents)
+fill it, links entries into a graph via typed `ref` fields, and generates dashboards, an
+action feed, and a machine-readable export on every build.
+
+## 📖 Guide
+
+Full documentation lives in **[`docs/guide/`](docs/guide/index.md)**:
+
+- [Getting started](docs/guide/getting-started.md) · [Concepts](docs/guide/concepts.md) ·
+  [Authoring](docs/guide/authoring.md) · [Fields & the graph](docs/guide/fields-and-graph.md)
+- [Derived output](docs/guide/derived-output.md) ·
+  [Profiles & tailoring](docs/guide/profiles-and-tailoring.md) ·
+  [CLI reference](docs/guide/cli-reference.md) · [zplus & AI agents](docs/guide/for-ai-agents.md)
 
 ## Install
 
@@ -11,55 +22,38 @@ content, and new doc types are just rows in a file.
 pip install git+https://github.com/peers8862/zplus.git   # PyPI later
 ```
 
-Runtime tools it calls: `zensical`, `node`/`npx` (for staticrypt encryption), `git`.
+Runtime tools it calls: `zensical`, `node`/`npx` (staticrypt encryption), `git`.
 
-## Use
+## Quick start
 
 ```bash
-zplus profiles                     # list available site kinds
-zplus new my-site --profile projecthub   # zensical new + apply the profile's types
-cd my-site
-zplus apply              # (re)apply/update in an existing project — idempotent
-zplus new-entry --fill   # scaffold a dated entry; --fill prompts each section
-zplus gen-nav            # regenerate the managed nav region from the manifest
-zplus serve              # regenerate nav, then live-preview at :8000
-zplus build              # build + AES-encrypt (staticrypt) into ./site
-zplus deploy             # build + push encrypted site to the deploy branch
+zplus profiles                                # list site kinds (administration, projecthub)
+zplus new my-company --profile administration # scaffold a complete, seeded site
+cd my-company
+zplus new-entry --fill                        # add an entry (wizard prompts fields + sections)
+zplus check                                   # lint the corpus (broken refs, missing fields)
+zplus serve                                   # regenerate everything, preview at :8000
 ```
 
-Set `SITE_PASSWORD` in `.env` and `[project].deploy_remote` in `zplus.toml`
-before deploying.
+## What you get
 
-## What `apply` does (idempotent)
+From a set of typed entries, every build derives — automatically, from one in-memory
+corpus:
 
-Materializes `templates/`, `zplus.toml`, `.env(.example)` if absent; generates a
-unique `.staticrypt.json` salt; adds a managed nav region to `zensical.toml` and
-fills it from the manifest; adds a managed `.gitignore` block; removes the
-plaintext `.github/workflows/docs.yml` auto-deploy.
+- **Dashboards** on each collection landing, **boards** (kanban by status), and **facets**;
+- an **Action Center** worklist (unowned entries, open items, broken links) across the site;
+- a **mermaid graph page** of how entries connect;
+- **`corpus.json` + `llms.txt`** — a machine-readable export for local AI agents (kept out
+  of the published site).
 
-## Profiles and types
+## How it fits together
 
-Two levels, both data:
+- **Profiles** (`administration`, `projecthub`) are named starter bundles resolved into a
+  self-contained, editable `zplus.toml` — upgrades never overwrite your content.
+- **Types** are a reusable library (`data/types/<name>/`), templated (dated logs) or
+  section (curated pages); `zplus add-type` / `add-profile` extend your user library at
+  `~/.config/zplus/`.
+- **Fields** (incl. `ref`) make entries a queryable graph; `zplus check` keeps it valid.
 
-- **Types** are a reusable library (`data/types/<name>/` = a `[[type]]` def +
-  its template). A type — e.g. `meeting` — can belong to many profiles.
-- **Profiles** are site kinds (`data/profiles/<name>.toml`): an ordered list of
-  type names. `projecthub` today; `administration`, `sales`, … are drop-in
-  folders later.
-
-`zplus new --profile <kind>` **resolves** a profile into a **self-contained**
-project `zplus.toml` (full type defs, in order) plus editable templates — the
-project no longer depends on the library, so your edits and `pip install -U`
-never fight. The chosen profile is recorded in `[project].profile`.
-
-## Manifest (`zplus.toml`)
-
-Each doc type is a `[[type]]` with `name`, `label`, `folder`, `template`, and
-`[[type.section]]` blocks (`heading`, `shape` = prose|list|task, optional
-`prompt`). Edit a template's prose in `templates/<file>`; change a type's
-structure here.
-
-`zplus add-type` and `zplus add-profile` create new types/profiles interactively,
-saved to your user library (`~/.config/zplus/`, overlaying the built-ins). See
-`docs/GUIDE.md` §10 and `QUESTIONS.md`. Roadmap: resource generators (e.g. calendar
-pages).
+See the [guide](docs/guide/index.md) for everything. Design docs and the decision log are
+in [`docs/`](docs/) and [`QUESTIONS.md`](QUESTIONS.md).
