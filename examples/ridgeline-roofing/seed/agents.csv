@@ -1,0 +1,5 @@
+title,date,owner,status,runs,governed_by
+Invoice Triage Bot,2026-05-10,office-manager,supervised,2026-05-01-invoice-import,financial-controls
+Lead Concierge,2026-05-10,lead-estimator,assisted,2026-05-01-lead-intake-router,data-protection-and-privacy
+Reputation Agent,2026-05-10,owner-gm,autonomous,2026-05-01-review-request-sender,
+Scheduling Assistant,2026-05-10,dispatcher,supervised,2026-05-01-aerial-measure-fetch,

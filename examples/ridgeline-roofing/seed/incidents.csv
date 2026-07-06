@@ -1,0 +1,4 @@
+title,date,owner,severity,status,involved
+Customer double-charged,2026-06-03,bookkeeper,high,resolved,stripe|quickbooks
+CRM outage during storm surge,2026-06-14,dispatcher,medium,postmortem,jobnimbus
+Payroll miscalculation,2026-07-01,office-manager,high,open,gusto

@@ -1,0 +1,7 @@
+title,date,owner,status,touches,governed_by
+Invoice Import,2026-05-01,office-manager,supervised,quickbooks|stripe,financial-controls
+Lead Intake Router,2026-05-01,lead-estimator,assisted,jobnimbus|google-workspace,
+Review Request Sender,2026-05-01,office-manager,autonomous,podium|jobnimbus,
+Aerial Measure Fetch,2026-05-01,lead-estimator,supervised,eagleview|jobnimbus,
+Payroll Run,2026-05-01,bookkeeper,supervised,gusto,financial-controls
+Material Reorder Alert,2026-05-01,crew-lead,manual,jobnimbus,vendor-approval-policy

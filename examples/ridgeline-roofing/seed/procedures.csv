@@ -1,0 +1,7 @@
+title,date,owner,status,function,uses
+Monthly Close,2026-05-02,office-manager,active,finance,quickbooks|stripe
+New Hire Onboarding,2026-05-02,office-manager,active,people,gusto|google-workspace
+Job Estimate to Contract,2026-05-02,lead-estimator,active,operations,jobnimbus|eagleview
+Storm Damage Insurance Claim,2026-05-02,lead-estimator,draft,operations,companycam|jobnimbus
+Warranty Claim Handling,2026-05-02,office-manager,active,operations,
+Vendor Onboarding,2026-05-02,owner-gm,active,finance,

@@ -1,0 +1,6 @@
+title,date,owner,status,supersedes
+Adopt JobNimbus as our CRM,2026-04-01,owner-gm,decided,
+Switch payroll to Gusto,2026-04-05,office-manager,decided,
+Use drone photos for inspections,2026-04-08,owner-gm,superseded,
+Move photo docs to CompanyCam,2026-04-15,owner-gm,decided,2026-04-08-use-drone-photos-for-inspections
+Standardize on GAF shingles,2026-04-20,owner-gm,proposed,
