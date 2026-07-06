@@ -235,44 +235,92 @@ def _coerce(field, raw):
     return parts[0] if len(parts) == 1 else parts
 
 
-def create_from_file(project_dir, type_name, path):
-    """Batch-create one entry per row of a CSV/YAML file. Returns created paths."""
+def _resolve_type(project_dir, type_name):
     m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
     dt = m.type_by_name(type_name)
     if dt is None:
         raise SystemExit(f"error: no type named '{type_name}'")
+    return dt
+
+
+def _create_one(project_dir, dt, row, body=""):
+    """Create one entry from a row dict (title required). Returns rel path or None.
+
+    The shared core behind batch, one-shot flags, --like, and jot.
+    """
+    title = (row.get("title") or "").strip()
+    if not title:
+        return None
     field_by_name = {f.name: f for f in dt.fields}
     folder = os.path.join(project_dir, "docs", dt.folder)
     os.makedirs(folder, exist_ok=True)
+    slug = core.slugify(title)
+    cols = {k: v for k, v in row.items() if k not in ("title", "date")}
+    if dt.templated:
+        entry_date = (str(row.get("date") or date.today().isoformat())).strip()
+        fpath, suffix = core.resolve_collision(folder, entry_date, slug)
+        with open(os.path.join(project_dir, "templates", dt.template),
+                  encoding="utf-8") as f:
+            text = core.stamp(f.read(), title, entry_date, suffix)
+        for k, v in cols.items():
+            val = _coerce(field_by_name.get(k), v)
+            if val not in (None, "", []):
+                text = core.set_front_matter_value(text, k, val)
+    else:
+        fpath = core.resolve_plain(folder, slug)
+        fm = [f"title: {title}"]
+        for k, v in cols.items():
+            val = _coerce(field_by_name.get(k), v)
+            if val not in (None, "", []):
+                fm.append(f"{k}: {core.render_fm_value(val)}")
+        text = "---\n" + "\n".join(fm) + f"\n---\n# {title}\n"
+    if body:
+        text = text.rstrip("\n") + "\n\n" + body + "\n"
+    with open(fpath, "w", encoding="utf-8") as f:
+        f.write(text if text.endswith("\n") else text + "\n")
+    return os.path.relpath(fpath, project_dir)
+
+
+def create_from_file(project_dir, type_name, path):
+    """Batch-create one entry per row of a CSV/YAML file. Returns created paths."""
+    dt = _resolve_type(project_dir, type_name)
     created = []
     for row in _load_rows(path):
-        title = (row.get("title") or "").strip()
-        if not title:
-            continue
-        slug = core.slugify(title)
-        cols = {k: v for k, v in row.items() if k not in ("title", "date")}
-        if dt.templated:
-            entry_date = (row.get("date") or date.today().isoformat()).strip()
-            fpath, suffix = core.resolve_collision(folder, entry_date, slug)
-            with open(os.path.join(project_dir, "templates", dt.template),
-                      encoding="utf-8") as f:
-                text = core.stamp(f.read(), title, entry_date, suffix)
-            for k, v in cols.items():
-                val = _coerce(field_by_name.get(k), v)
-                if val not in (None, "", []):
-                    text = core.set_front_matter_value(text, k, val)
-        else:
-            fpath = core.resolve_plain(folder, slug)
-            fm = [f"title: {title}"]
-            for k, v in cols.items():
-                val = _coerce(field_by_name.get(k), v)
-                if val not in (None, "", []):
-                    fm.append(f"{k}: {core.render_fm_value(val)}")
-            text = "---\n" + "\n".join(fm) + f"\n---\n# {title}\n"
-        with open(fpath, "w", encoding="utf-8") as f:
-            f.write(text if text.endswith("\n") else text + "\n")
-        created.append(os.path.relpath(fpath, project_dir))
+        p = _create_one(project_dir, dt, row)
+        if p:
+            created.append(p)
     return created
+
+
+def create_one(project_dir, type_name, title, sets=None, date_str=None, like=None):
+    """One-shot creation from flags. sets: ['k=v', ...]; like: slug to clone fields from."""
+    dt = _resolve_type(project_dir, type_name)
+    row = {}
+    if like:
+        m = manifest_mod.load(os.path.join(project_dir, "zplus.toml"))
+        src = corpus_mod.read_corpus(project_dir, m).by_slug.get(like)
+        if src is None:
+            raise SystemExit(f"error: --like: no entry '{like}'")
+        row.update(src.fields)
+    for pair in (sets or []):
+        if "=" not in pair:
+            raise SystemExit(f"error: --set expects key=value, got '{pair}'")
+        k, v = pair.split("=", 1)
+        row[k.strip()] = v.strip()
+    row["title"] = title
+    if date_str:
+        row["date"] = date_str
+    p = _create_one(project_dir, dt, row)
+    return [p] if p else []
+
+
+def jot(project_dir, text, type_name="idea"):
+    """Quick-capture: create a draft entry titled from the text, with the text as body."""
+    dt = _resolve_type(project_dir, type_name)
+    first = (text.strip().splitlines() or ["note"])[0]
+    title = " ".join(first.split()[:8]) or "note"
+    p = _create_one(project_dir, dt, {"title": title}, body=text.strip())
+    return [p] if p else []
 
 
 def main(argv=None):

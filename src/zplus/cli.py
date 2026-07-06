@@ -34,7 +34,18 @@ def build_parser():
     p_entry.add_argument("--from", dest="from_file", metavar="FILE",
                          help="batch-create entries from a CSV/YAML file")
     p_entry.add_argument("--type", dest="type_name", metavar="NAME",
-                         help="type name (required with --from)")
+                         help="type name (required with --from / one-shot)")
+    p_entry.add_argument("--title", help="entry title (one-shot, non-interactive)")
+    p_entry.add_argument("--set", dest="sets", action="append", metavar="k=v",
+                         default=[], help="set a field value (repeatable)")
+    p_entry.add_argument("--date", help="entry date (one-shot; default today)")
+    p_entry.add_argument("--like", metavar="SLUG",
+                         help="clone field values from an existing entry")
+
+    p_jot = sub.add_parser("jot", help="quick-capture a draft entry from text")
+    p_jot.add_argument("text")
+    p_jot.add_argument("--type", dest="jot_type", default="idea",
+                       help="target type (default: idea)")
     sub.add_parser("add-page", help="add a plain subpage to a non-templated section")
     sub.add_parser("gen-nav", help="regenerate the managed nav region")
     sub.add_parser("check", help="lint the corpus (refs, required fields, enums)")
@@ -72,7 +83,19 @@ def main(argv=None):
             created = entry_cmd.create_from_file(cwd, args.type_name, args.from_file)
             print(f"✔ created {len(created)} entr{'y' if len(created) == 1 else 'ies'}")
             return 0
+        if args.sets or args.title or args.like:
+            if not args.type_name or not args.title:
+                raise SystemExit("error: one-shot needs --type NAME and --title TITLE")
+            created = entry_cmd.create_one(cwd, args.type_name, args.title,
+                                           sets=args.sets, date_str=args.date,
+                                           like=args.like)
+            print(f"✔ created {created[0]}" if created else "nothing created")
+            return 0
         return entry_cmd.main(["--fill"] if args.fill else [])
+    if args.cmd == "jot":
+        created = entry_cmd.jot(cwd, args.text, args.jot_type)
+        print(f"✔ jotted {created[0]}" if created else "nothing created")
+        return 0
     if args.cmd == "add-page":
         return add_page_cmd.main([])
     if args.cmd == "gen-nav":

@@ -50,5 +50,44 @@ class Batch(unittest.TestCase):
                 os.path.join(d, "docs", "roles", "bookkeeper.md")))
 
 
+class OneShotAndJot(unittest.TestCase):
+    def _project(self, d):
+        with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+            f.write(manifest.resolve_profile_text("administration"))
+        _write(os.path.join(d, "templates", "automation.md"),
+               paths.read_type_template("automation").decode("utf-8"))
+        _write(os.path.join(d, "templates", "idea.md"),
+               paths.read_type_template("idea").decode("utf-8"))
+        _write(os.path.join(d, "docs", "systems", "billing.md"),
+               "---\ntitle: Billing\n---\n# Billing\n")
+
+    def test_one_shot_set_flags(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d)
+            created = entry.create_one(d, "automation", "Invoice Import",
+                                       sets=["owner=steve", "status=manual", "touches=billing"],
+                                       date_str="2026-04-01")
+            body = open(os.path.join(d, created[0]), encoding="utf-8").read()
+            self.assertIn("owner: steve", body)
+            self.assertIn("touches: [billing]", body)
+
+    def test_like_clones_fields(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d)
+            entry.create_one(d, "automation", "Src",
+                             sets=["owner=steve", "status=manual"], date_str="2026-04-01")
+            created = entry.create_one(d, "automation", "Clone",
+                                       like="2026-04-01-src", date_str="2026-04-02")
+            body = open(os.path.join(d, created[0]), encoding="utf-8").read()
+            self.assertIn("owner: steve", body)   # cloned from Src
+
+    def test_jot_creates_idea(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d)
+            created = entry.jot(d, "buy a better coffee machine for the office")
+            body = open(os.path.join(d, created[0]), encoding="utf-8").read()
+            self.assertIn("buy a better coffee machine", body)
+
+
 if __name__ == "__main__":
     unittest.main()
