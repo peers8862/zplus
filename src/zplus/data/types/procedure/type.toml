@@ -3,6 +3,7 @@ name = "procedure"
 label = "Procedures"
 folder = "procedures"
 template = "procedure.md"
+order = "alpha"
 landing = "Standard operating procedures — how we do things."
   [[type.section]]
   heading = "Purpose"

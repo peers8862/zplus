@@ -17,7 +17,7 @@ class TestOrdering(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             _touch(d, "timeline", "index.md", "2026-07-02-a.md", "2026-07-05-b.md")
             self.assertEqual(
-                nav.ordered_paths(d, "timeline"),
+                nav.ordered_paths(d, "timeline", "date-desc"),
                 ["timeline/index.md", "timeline/2026-07-05-b.md", "timeline/2026-07-02-a.md"])
 
     def test_build_region_skips_empty_types(self):

@@ -11,6 +11,7 @@ from . import paths
 VALID_SHAPES = {"prose", "list", "task", "diagram"}
 VALID_FIELD_TYPES = {"text", "enum", "multi-enum", "date", "number",
                      "bool", "owner", "status", "ref"}
+VALID_ORDERS = {"alpha", "date-desc"}
 
 
 @dataclass
@@ -40,6 +41,7 @@ class DocType:
     landing: str = ""           # optional index.md intro text for the section
     sections: list = field(default_factory=list)
     fields: list = field(default_factory=list)
+    order: str = ""             # "" derives from templated (date-desc | alpha)
 
 
 @dataclass
@@ -117,10 +119,15 @@ def from_dict(data, source="<dict>"):
                                 values=fdef.get("values", []),
                                 ref=fdef.get("ref", ""),
                                 many=fdef.get("many", False)))
+        order = t.get("order", "")
+        if order and order not in VALID_ORDERS:
+            raise ValueError(
+                f"{source}: invalid order '{order}' for type '{t['name']}' "
+                f"(use alpha|date-desc)")
         types.append(DocType(name=t["name"], label=t["label"],
                              folder=t["folder"], template=t.get("template", ""),
                              templated=templated, landing=t.get("landing", ""),
-                             sections=sections, fields=fields))
+                             sections=sections, fields=fields, order=order))
     return Manifest(project=project, types=types)
 
 
