@@ -6,6 +6,7 @@ import sys
 from . import manifest as manifest_mod
 from .commands import (add_page as add_page_cmd, add_profile as add_profile_cmd,
                        add_type as add_type_cmd, apply as apply_cmd,
+                       check as check_cmd,
                        entry as entry_cmd, nav as nav_cmd, new as new_cmd,
                        site as site_cmd)
 
@@ -32,6 +33,7 @@ def build_parser():
                       help="prompt each section at the terminal")
     sub.add_parser("add-page", help="add a plain subpage to a non-templated section")
     sub.add_parser("gen-nav", help="regenerate the managed nav region")
+    sub.add_parser("check", help="lint the corpus (refs, required fields, enums)")
     sub.add_parser("serve", help="regenerate nav, then serve locally")
     sub.add_parser("build", help="build + encrypt into ./site")
     sub.add_parser("deploy", help="build + encrypt + push to the deploy branch")
@@ -63,6 +65,8 @@ def main(argv=None):
         return add_page_cmd.main([])
     if args.cmd == "gen-nav":
         return nav_cmd.main([])
+    if args.cmd == "check":
+        return check_cmd.run(cwd)
     if args.cmd == "serve":
         return site_cmd.serve(cwd)
     if args.cmd == "build":

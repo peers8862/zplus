@@ -120,5 +120,36 @@ class CorpusGraph(unittest.TestCase):
             self.assertEqual(target.backlinks[("agent", "runs")], ["invoice-bot"])
 
 
+from zplus.commands import check as check_cmd
+
+
+class Check(unittest.TestCase):
+    def _project(self, d, runs_slug, owner="steve"):
+        with open(os.path.join(d, "zplus.toml"), "w", encoding="utf-8") as f:
+            f.write('[project]\nprofile="fixture"\n' + FIELD_FRAG + '''
+[[type]]
+name = "automation"
+label = "Automations"
+folder = "automations"
+template = "automation.md"
+landing = "Automations."
+''')
+        _write(os.path.join(d, "docs", "automations", "invoice-import.md"),
+               "---\ntitle: Invoice Import\n---\n# Invoice Import\n")
+        _write(os.path.join(d, "docs", "agents", "invoice-bot.md"),
+               f"---\ntitle: Invoice Bot\nowner: {owner}\n"
+               f"status: supervised\nruns: [{runs_slug}]\n---\n# Invoice Bot\n")
+
+    def test_clean_corpus_returns_zero(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d, runs_slug="invoice-import")
+            self.assertEqual(check_cmd.run(d), 0)
+
+    def test_dangling_ref_and_missing_required_return_one(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._project(d, runs_slug="does-not-exist", owner="")
+            self.assertEqual(check_cmd.run(d), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
